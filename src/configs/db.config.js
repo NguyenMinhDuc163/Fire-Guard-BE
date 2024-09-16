@@ -1,15 +1,14 @@
-const env = process.env;
-const fs = require('fs');
-const db = {
-    host: env.DB_HOST,
-    user: env.DB_USER,
-    password: env.DB_PASSWORD,
-    database: env.DB_NAME || 'programming_languages',
-    port: env.DB_PORT || 3306,
-    ssl: {
-      mode: 'VERIFY_IDENTITY',
-      ca: fs.readFileSync('/etc/ssl/cert.pem', 'utf-8'),
-    }
-};
+// db.config.js
+require('dotenv').config();
 
-module.exports = db;
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+});
+
+module.exports = pool;
