@@ -1,12 +1,10 @@
 const express = require('express');
 const app = express();
 
-// Sử dụng middleware để parse dữ liệu x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 // Sử dụng middleware để parse dữ liệu JSON
 app.use(express.json());
 
-// API nhận dữ liệu từ client (Postman hoặc ESP8266)
 app.post('/api/data', (req, res) => {
     // In ra toàn bộ req.body để kiểm tra
     console.log('Dữ liệu nhận được:', req.body);
@@ -26,6 +24,7 @@ app.post('/api/data', (req, res) => {
 
 // Khởi động server
 const PORT = 3000;
-app.listen(PORT, '0.0.0.0', () => {
+const IP = '0.0.0.0'; // Để lắng nghe trên tất cả các địa chỉ IP
+app.listen(PORT, IP, () => {
     console.log(`Server đang chạy trên cổng ${PORT}`);
 });
