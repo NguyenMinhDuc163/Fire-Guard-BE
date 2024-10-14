@@ -1,4 +1,3 @@
-# Fire-Guard-BE
 # Danh Sách API
 
 ## 1. Gửi Dữ Liệu Cảm Biến
