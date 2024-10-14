@@ -1,4 +1,4 @@
-// index.js
+// dataSave.router.js
 const express = require('express');
 const app = express();
 const fireAlarmRoute = require('./src/routes/fireAlarm.route');
