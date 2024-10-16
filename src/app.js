@@ -12,13 +12,11 @@ const guidesAndNewsRouter = require('./routes/guidesAndNews.router');
 const guidesAndNewsAddRouter = require('./routes/guidesAndNewsAdd.router');
 
 
-// Thêm các router khác nếu có
 
 require('dotenv').config();
 
 app.use(express.json());
 
-// Sử dụng các router
 app.use(sensorDataRouter);
 app.use(dataSaveRouter);
 app.use(notificationsRouter);
