@@ -1,5 +1,5 @@
 {
-  "name": "fire_guard_be",
+  "name": "@NguyenMinhDuc163/fire_guard_be",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -8,9 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nguyen Minh Duc",
   "license": "ISC",
-  "description": "",
+  "description": "Backend for Fire Guard",
   "dependencies": {
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
@@ -24,5 +24,12 @@
     "pg": "^8.13.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NguyenMinhDuc163/Fire-Guard-BE.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
