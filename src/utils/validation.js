@@ -10,13 +10,13 @@ exports.validateSensorData = (data) => {
     });
     return schema.validate(data);
 };
-
 exports.validateNotificationData = (data) => {
     const schema = Joi.object({
-        user_id: Joi.string().required(),
-        message: Joi.string().required(),
-        timestamp: Joi.date().iso().required(),
+        user_id: Joi.number().required(),
+        title: Joi.string().required(),
+        body: Joi.string().required(),
     });
+
     return schema.validate(data);
 };
 
