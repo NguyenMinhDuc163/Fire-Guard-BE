@@ -10,6 +10,7 @@ const iotStatusRouter = require('./routes/iotStatus.router');
 const iotStatusSaveRouter = require('./routes/iotStatusSave.router');
 const guidesAndNewsRouter = require('./routes/guidesAndNews.router');
 const guidesAndNewsAddRouter = require('./routes/guidesAndNewsAdd.router');
+const authRouter = require('./routes/auth.router');
 
 
 
@@ -27,6 +28,7 @@ app.use(iotStatusRouter);
 app.use(iotStatusSaveRouter);
 app.use(guidesAndNewsRouter);
 app.use(guidesAndNewsAddRouter);
+app.use(authRouter);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Fire Alarm Backend System');

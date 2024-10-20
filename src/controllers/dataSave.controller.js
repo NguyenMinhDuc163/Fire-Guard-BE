@@ -10,7 +10,7 @@ exports.saveSensorData = async (req, res) => {
 
     try {
         await saveSensorData(req.body);
-        res.status(200).json(createResponse('success', 'Dữ liệu đã được lưu thành công.', 200));
+        res.status(200).json(createResponse('success', 'Dữ liệu đã được lưu thành công.', 200, [{'a': '99999'}]));
     } catch (err) {
         res.status(500).json(createResponse('fail', 'Lỗi khi lưu trữ dữ liệu.', 500, null, err.message));
     }

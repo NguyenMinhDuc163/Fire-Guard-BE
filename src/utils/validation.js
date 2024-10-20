@@ -80,3 +80,21 @@ exports.validateMultipleGuidesAndNewsData = (data) => {
     );
     return schema.validate(data);
 };
+
+exports.validateRegisterData = (data) => {
+    const schema = Joi.object({
+        username: Joi.string().min(3).max(30).required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().min(6).required(),
+        token_fcm: Joi.string().optional()
+    });
+    return schema.validate(data);
+};
+
+exports.validateLoginData = (data) => {
+    const schema = Joi.object({
+        email: Joi.string().email().required(),
+        password: Joi.string().required()
+    });
+    return schema.validate(data);
+};
