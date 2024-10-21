@@ -20,14 +20,17 @@ exports.validateNotificationData = (data) => {
     return schema.validate(data);
 };
 
+
 exports.validateEmergencyData = (data) => {
     const schema = Joi.object({
         location: Joi.string().required(),
         incident_details: Joi.string().required(),
         timestamp: Joi.date().iso().required(),
+        phone_number: Joi.string().optional(), // Không bắt buộc
     });
     return schema.validate(data);
 };
+
 
 exports.validateFamilyNotificationData = (data) => {
     const schema = Joi.object({
@@ -35,6 +38,7 @@ exports.validateFamilyNotificationData = (data) => {
         family_member_id: Joi.string().required(),
         message: Joi.string().required(),
         timestamp: Joi.date().iso().required(),
+        phone_number: Joi.string().optional(), // Không bắt buộc
     });
     return schema.validate(data);
 };
