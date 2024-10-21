@@ -4,13 +4,14 @@
 ## Option 1: Chạy trên localhost
 Dành cho môi trường phát triển cục bộ, yêu cầu cấu hình thủ công.
 1. Sao chép file `.env.example` thành `.env` và chỉnh sửa các giá trị kết nối với cơ sở dữ liệu.
-2. Cài đặt các dependencies:  
+2. Chay file `ddl.sql` trong database để tạo bảng trong database.
+3. Cài đặt các dependencies:  
    `npm i`
-3. Chạy dự án:  
+4. Chạy dự án:  
    `npm run dev`
 
 ## Option 2: Chạy với Docker (Kết nối với Database đã deploy)
-Sử dụng Docker khi đã có cơ sở dữ liệu PostgreSQL từ xa  
+Sử dụng Docker khi đã có cơ sở dữ liệu PostgreSQL từ xa (Chi tiết cấu hình database vui lòng liên hệ [Nguyễn Đức](https://www.facebook.com/ngminhduc1603))
 Linux / macOS:  
 `docker run -dp 3000:3000 --name fire_guard_be -v "$(pwd):/app" nguyenduc1603/fire_guard_be:v1.0.0`  
 Windows:  
