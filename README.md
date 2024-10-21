@@ -11,11 +11,15 @@ Dành cho môi trường phát triển cục bộ, yêu cầu cấu hình thủ 
    `npm run dev`
 
 ## Option 2: Chạy với Docker (Kết nối với Database đã deploy)
+
 Sử dụng Docker khi đã có cơ sở dữ liệu PostgreSQL từ xa (Chi tiết cấu hình database vui lòng liên hệ [Nguyễn Đức](https://www.facebook.com/ngminhduc1603))
+
 Linux / macOS:  
 `docker run -dp 3000:3000 --name fire_guard_be -v "$(pwd):/app" nguyenduc1603/fire_guard_be:v1.0.0`  
+
 Windows:  
 `docker run -dp 3000:3000 --name fire_guard_be -v "%cd%:/app" nguyenduc1603/fire_guard_be:v1.0.0`  
+
 Dừng docker:  
 `docker stop fire_guard_be`
 
