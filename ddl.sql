@@ -29,6 +29,8 @@ CREATE TABLE sensor_data (
   mq135_air_quality INTEGER NOT NULL,
   timestamp TIMESTAMP NOT NULL
 );
+
+
 CREATE TABLE notifications (
   id SERIAL PRIMARY KEY,
   user_id VARCHAR(255) NOT NULL,
@@ -36,27 +38,22 @@ CREATE TABLE notifications (
   timestamp TIMESTAMP NOT NULL
 );
 
-CREATE TABLE emergency_calls (
-  id SERIAL PRIMARY KEY,
-  location VARCHAR(255) NOT NULL,
-  incident_details TEXT NOT NULL,
-  timestamp TIMESTAMP NOT NULL
-);
 
 CREATE TABLE family_notifications (
-  id SERIAL PRIMARY KEY,
-  user_id VARCHAR(255) NOT NULL,
-  family_member_id VARCHAR(255) NOT NULL,
-  message TEXT NOT NULL,
-  timestamp TIMESTAMP NOT NULL
+    id SERIAL PRIMARY KEY,                  -- ID tự động tăng
+    user_id VARCHAR(255) NOT NULL,          -- ID của người dùng gửi thông báo
+    family_member_id VARCHAR(255),          -- ID của người thân nhận thông báo
+    phone_number VARCHAR(255),              -- Số điện thoại người nhận
+    message TEXT,                           -- Nội dung thông báo
+    status VARCHAR(50),                     -- Trạng thái gửi (success hoặc fail)                 -- Trạng thái gửi (success hoặc fail)
+    response_message TEXT,                  -- Tin nhắn chi tiết (lỗi hoặc thành công)
+    timestamp TIMESTAMP DEFAULT NOW()       -- Thời gian gửi thông báo
 );
 
-CREATE TABLE iot_devices_status (
-  id SERIAL PRIMARY KEY,
-  device_name VARCHAR(255) NOT NULL,
-  status VARCHAR(50) NOT NULL -- Có thể là 'active', 'inactive', 'error', v.v.
-);
 
+
+-- TRUNCATE TABLE family_notifications RESTART IDENTITY CASCADE;
+-- drop table family_notifications;
 CREATE TABLE iot_devices_status (
   device_name VARCHAR(255) PRIMARY KEY, -- Mỗi thiết bị IoT chỉ có một trạng thái tại một thời điểm
   status VARCHAR(50) NOT NULL,
@@ -80,4 +77,27 @@ VALUES
 ('Cách thoát hiểm khi có cháy', 'article', NULL, 'https://example.com/article1', 'guide'),
 ('Tin tức cảnh báo cháy rừng', 'article', NULL, 'https://example.com/news1', 'news');
 
+
+CREATE TABLE server_log (
+    id SERIAL PRIMARY KEY,
+    status_code INT,            -- Mã trạng thái HTTP (ví dụ 200, 500)
+    method VARCHAR(10),         -- Phương thức HTTP (GET, POST, etc.)
+    url TEXT,                   -- URL được gọi
+    headers JSONB,              -- Lưu headers của request dưới dạng JSON
+    request_body JSONB,         -- Lưu body của request
+    response_body JSONB,
+    level VARCHAR(10),          -- Mức độ log (info, error, etc.)
+    message TEXT,               -- Thông điệp chính của log-- Lưu body của response
+    timestamp TIMESTAMP DEFAULT NOW()  -- Thời gian tạo log
+);
+
+CREATE TABLE emergency_calls (
+    id SERIAL PRIMARY KEY,              -- ID tự động tăng
+    location VARCHAR(255),              -- Địa điểm của sự cố
+    phone_number VARCHAR(255),          -- Số điện thoại được gọi
+    incident_details TEXT,              -- Chi tiết sự cố
+    status VARCHAR(50),                 -- Trạng thái cuộc gọi (success hoặc fail)
+    response_message TEXT,              -- Thông tin phản hồi từ API
+    timestamp TIMESTAMP DEFAULT NOW()   -- Thời gian gọi
+);
 

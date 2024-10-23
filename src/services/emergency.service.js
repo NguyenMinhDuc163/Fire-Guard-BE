@@ -2,7 +2,14 @@ const EmergencyModel = require('../models/emergency.model');
 const axios = require('axios');
 
 const callFireDepartment = async (data, phoneNumber) => {
-    await EmergencyModel.save(data); // Lưu thông tin vào cơ sở dữ liệu
+    // Lưu thông tin vào cơ sở dữ liệu trước khi gọi API
+    await EmergencyModel.save({
+        location: data.location,
+        phone_number: phoneNumber,
+        incident_details: data.incident_details,
+        status: 'pending',  // Trạng thái ban đầu trước khi gửi thông báo
+        response_message: 'Đang gửi thông báo đến lực lượng cứu hỏa.'
+    });
 
     const messageBody = {
         messages: [
@@ -25,6 +32,8 @@ const callFireDepartment = async (data, phoneNumber) => {
     });
 
     console.log('Đã gửi thông báo đến lực lượng cứu hỏa:', response.data);
+
+    return response.data;
 };
 
 module.exports = {

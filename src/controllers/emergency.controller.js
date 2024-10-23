@@ -2,6 +2,7 @@ const { callFireDepartment } = require('../services/emergency.service');
 const { validateEmergencyData } = require('../utils/validation');
 const { createResponse } = require('../utils/responseHelper');
 const { logger } = require('../utils/logger');
+const EmergencyModel = require('../models/emergency.model');
 
 const lastFireDepartmentCall = {}; // Lưu timestamp của mỗi lần gọi theo vị trí
 
@@ -30,7 +31,16 @@ exports.callFireDepartment = async (req, res) => {
 
     try {
         // Gọi lực lượng cứu hỏa với số điện thoại truyền vào hoặc lấy từ .env
-        await callFireDepartment(req.body, phone_number || process.env.FIRE_DEPARTMENT_PHONE);
+        const response = await callFireDepartment(req.body, phone_number || process.env.FIRE_DEPARTMENT_PHONE);
+
+        // Lưu log thành công vào cơ sở dữ liệu
+        await EmergencyModel.save({
+            location: req.body.location,
+            phone_number: phone_number || process.env.FIRE_DEPARTMENT_PHONE,
+            incident_details: req.body.incident_details,
+            status: 'success',
+            response_message: 'Lực lượng cứu hỏa đã được thông báo thành công.'
+        });
 
         // Cập nhật timestamp cho địa điểm này
         lastFireDepartmentCall[location] = now;
@@ -41,6 +51,15 @@ exports.callFireDepartment = async (req, res) => {
             createResponse('success', 'Lực lượng cứu hỏa đã được thông báo.', 200, [])
         );
     } catch (err) {
+        // Lưu log thất bại vào cơ sở dữ liệu
+        await EmergencyModel.save({
+            location: req.body.location,
+            phone_number: phone_number || process.env.FIRE_DEPARTMENT_PHONE,
+            incident_details: req.body.incident_details,
+            status: 'fail',
+            response_message: err.message
+        });
+
         logger.error(`Lỗi khi thông báo lực lượng cứu hỏa: ${err.message}`, { meta: { request: req.body, error: err } });
         res.status(500).json(
             createResponse('fail', 'Lỗi hệ thống.', 500, [], err.message)

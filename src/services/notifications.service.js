@@ -1,11 +1,12 @@
 const axios = require('axios');
 const pool = require('../configs/db.config');
 const { getSavedAccessToken } = require('../configs/token.service');
+const NotificationModel = require('../models/notification.model');
 
-// Hàm gửi thông báo tới tất cả người dùng
+// Hàm gửi thông báo tới tất cả người dùng và ghi log vào DB
 const sendNotificationToAllUsers = async (title, body) => {
     try {
-        const result = await pool.query('SELECT token_fcm FROM users WHERE token_fcm IS NOT NULL');
+        const result = await pool.query('SELECT id, token_fcm FROM users WHERE token_fcm IS NOT NULL');
         const users = result.rows;
 
         if (users.length === 0) {
@@ -32,7 +33,29 @@ const sendNotificationToAllUsers = async (title, body) => {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 }
-            )
+            ).then(async (response) => {
+                // Lưu log thành công vào database
+                await NotificationModel.save({
+                    user_id: user.id,
+                    title,
+                    body,
+                    fcm_token: user.token_fcm,
+                    status: 'success',
+                    message: 'Thông báo đã được gửi thành công.'
+                });
+                return response;
+            }).catch(async (error) => {
+                // Lưu log thất bại vào database
+                await NotificationModel.save({
+                    user_id: user.id,
+                    title,
+                    body,
+                    fcm_token: user.token_fcm,
+                    status: 'fail',
+                    message: error.message
+                });
+                throw error;
+            })
         );
 
         // Chờ tất cả yêu cầu hoàn tất
