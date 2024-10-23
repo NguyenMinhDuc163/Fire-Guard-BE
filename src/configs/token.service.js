@@ -1,7 +1,7 @@
 const { GoogleAuth } = require('google-auth-library');
 const pool = require('../configs/db.config'); // Kết nối PostgreSQL
 
-const SERVICE_ACCOUNT_FILE = 'fire-guard-5a3b2-firebase-adminsdk-9nq7d-d9df311402.json';
+const SERVICE_ACCOUNT_FILE = 'fire-guard-5a3b2-firebase-adminsdk-9nq7d-7d814fadd1.json';
 
 // Hàm lấy Access Token từ Firebase
 async function getAccessToken() {
