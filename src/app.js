@@ -11,13 +11,13 @@ const iotStatusSaveRouter = require('./routes/iotStatusSave.router');
 const guidesAndNewsRouter = require('./routes/guidesAndNews.router');
 const guidesAndNewsAddRouter = require('./routes/guidesAndNewsAdd.router');
 const authRouter = require('./routes/auth.router');
-
+const { logMiddleware } = require('./utils/logger');
 
 
 require('dotenv').config();
 
 app.use(express.json());
-
+app.use(logMiddleware);
 app.use(sensorDataRouter);
 app.use(dataSaveRouter);
 app.use(notificationsRouter);
