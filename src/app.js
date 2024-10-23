@@ -12,7 +12,7 @@ const guidesAndNewsRouter = require('./routes/guidesAndNews.router');
 const guidesAndNewsAddRouter = require('./routes/guidesAndNewsAdd.router');
 const authRouter = require('./routes/auth.router');
 const { logMiddleware } = require('./utils/logger');
-
+const { getAccessToken } = require('./configs/token.service'); // Import service để gọi đến Firebase
 
 require('dotenv').config();
 
@@ -29,6 +29,15 @@ app.use(iotStatusSaveRouter);
 app.use(guidesAndNewsRouter);
 app.use(guidesAndNewsAddRouter);
 app.use(authRouter);
+
+// Khi server khởi động, gọi Firebase để lấy token mới và lưu vào DB
+getAccessToken()
+    .then(() => {
+        console.log('Token đã được cập nhật khi khởi động server.');
+    })
+    .catch((err) => {
+        console.error('Lỗi khi lấy token từ Firebase lúc khởi động server:', err);
+    });
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Fire Alarm Backend System');

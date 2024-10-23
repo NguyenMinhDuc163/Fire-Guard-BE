@@ -20,13 +20,13 @@ async function getAccessToken() {
             throw new Error('Không thể lấy được Access Token từ Firebase.');
         }
 
-        // Lưu token vào DB
+        // Lưu token mới vào DB
         await pool.query(
             `INSERT INTO access_tokens (token, created_at) VALUES ($1, NOW())`,
             [token.token]
         );
 
-        console.log('Token đã được lưu vào DB.');
+        console.log('Token mới đã được lưu vào DB.');
         return token.token;
     } catch (error) {
         console.error('Lỗi khi lấy Access Token:', error.message); // Log lỗi chi tiết
