@@ -16,3 +16,4 @@ benchmarks/graphs
 # https://git-scm.com/docs/gitignore
 # Ignore .env file
 .env
+/firebase-admin-api.json

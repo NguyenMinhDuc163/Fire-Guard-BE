@@ -69,7 +69,7 @@ const sendNotificationToAllUsers = async (title, body) => {
                 console.error(`Lỗi gửi thông báo tới user ${userToken}:`, result.reason.message);
             }
         });
-
+8
         return results;
     } catch (error) {
         console.error('Lỗi khi gửi thông báo:', error.message);
