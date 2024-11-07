@@ -1,0 +1,13 @@
+version = 1
+
+[[analyzers]]
+name = "sql"
+
+[[analyzers]]
+name = "docker"
+
+[[analyzers]]
+name = "javascript"
+
+  [analyzers.meta]
+  environment = ["nodejs"]
