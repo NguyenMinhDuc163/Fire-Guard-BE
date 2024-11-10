@@ -6,9 +6,12 @@ const axios = require('axios');
 let flameSensorCount = 0; // Bộ đếm cho số lần liên tiếp flame_sensor < 500
 let gasLeakCount = 0; // Bộ đếm cho số lần liên tiếp mq2_gas_level = 0 và mq135_air_quality != 0
 const BASE_URL = process.env.BASE_URL;
-const NOTIFICATION_INTERVAL = 30 * 1000; // 30 giây
+const NOTIFICATION_INTERVAL = 10 * 1000; // 30 giây
 let lastFireNotificationTime = 0; // Thời gian gửi thông báo cháy gần nhất
 let lastGasLeakNotificationTime = 0; // Thời gian gửi thông báo rò rỉ khí ga gần nhất
+const FALMECOUNT = 3
+const GASCOUNT = 3
+const SOSCOUNT = 20
 
 exports.receiveSensorData = async (req, res) => {
     const { error } = validateSensorData(req.body);
@@ -32,7 +35,7 @@ exports.receiveSensorData = async (req, res) => {
         }
 
         // Gửi thông báo nếu đạt 5 lần liên tiếp và đủ 30 giây từ lần gửi trước
-        if (flameSensorCount >= 5 && (Date.now() - lastFireNotificationTime >= NOTIFICATION_INTERVAL)) {
+        if (flameSensorCount >= FALMECOUNT && (Date.now() - lastFireNotificationTime >= NOTIFICATION_INTERVAL)) {
             lastFireNotificationTime = Date.now();
             await axios.post(`${BASE_URL}/notifications/send`, {
                 title: "Cảnh báo cháy!",
@@ -42,7 +45,7 @@ exports.receiveSensorData = async (req, res) => {
         }
 
         // Gọi cứu hỏa nếu đạt hơn 20 lần liên tiếp
-        if (flameSensorCount > 20) {
+        if (flameSensorCount > SOSCOUNT) {
             flameSensorCount = 0; // Reset đếm sau khi gọi cứu hỏa
             await axios.post(`${BASE_URL}/emergency/call`, {
                 location: "123 ABC Street",
@@ -54,14 +57,14 @@ exports.receiveSensorData = async (req, res) => {
         }
 
         // Kiểm tra điều kiện rò rỉ khí ga
-        if (req.body.mq2_gas_level === 0 && req.body.mq135_air_quality !== 0) {
+        if (req.body.mq2_gas_level === 0 || req.body.mq135_air_quality !== 0) {
             gasLeakCount += 1;
         } else {
             gasLeakCount = 0; // Reset đếm nếu giá trị không thỏa điều kiện
         }
 
         // Gửi cảnh báo rò rỉ khí ga nếu đạt hơn 5 lần liên tiếp và đủ 30 giây từ lần gửi trước
-        if (gasLeakCount > 5 && (Date.now() - lastGasLeakNotificationTime >= NOTIFICATION_INTERVAL)) {
+        if (gasLeakCount > GASCOUNT && (Date.now() - lastGasLeakNotificationTime >= NOTIFICATION_INTERVAL)) {
             lastGasLeakNotificationTime = Date.now();
             await axios.post(`${BASE_URL}/notifications/send`, {
                 title: "Cảnh báo rò rỉ khí ga",
