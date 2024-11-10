@@ -9,11 +9,16 @@ const saveMultipleIotStatus = async (devices) => {
     RETURNING *;
   `;
 
+    const updatedDevices = [];
+
     for (let device of devices) {
         const { device_name, status, timestamp } = device;
         const values = [device_name, status, timestamp];
-        await pool.query(query, values);
+        const result = await pool.query(query, values);
+        updatedDevices.push(result.rows[0]); // Lưu kết quả cập nhật của từng thiết bị
     }
+
+    return updatedDevices; // Trả về danh sách các thiết bị đã cập nhật
 };
 
 module.exports = {
