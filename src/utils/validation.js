@@ -3,13 +3,15 @@ const Joi = require('joi');
 exports.validateSensorData = (data) => {
     const schema = Joi.object({
         device_id: Joi.string().required(),
-        flame_sensor: Joi.boolean().required(),
+        flame_sensor: Joi.number().integer().required(), // Thay đổi kiểu dữ liệu thành số
         mq2_gas_level: Joi.number().integer().required(),
         mq135_air_quality: Joi.number().integer().required(),
+        buzzer_status: Joi.boolean().required(), // Thêm trường mới
         timestamp: Joi.date().iso().required(),
     });
     return schema.validate(data);
 };
+
 exports.validateNotificationData = (data) => {
     const schema = Joi.object({
         user_id: Joi.number().required(),

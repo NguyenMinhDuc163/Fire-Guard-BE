@@ -18,6 +18,7 @@ exports.receiveSensorData = async (req, res) => {
         res.status(200).json(createResponse('success', 'Dữ liệu đã được nhận và đang xử lý.', 200, []));
     } catch (err) {
         logger.error(`Lỗi khi xử lý dữ liệu cảm biến: ${err.message}`, { meta: { request: req.body, error: err } });
+        console.log(err);
         res.status(500).json(createResponse('fail', 'Lỗi khi xử lý dữ liệu.', 500, [], err.message));
     }
 };
