@@ -47,12 +47,14 @@ exports.validateFamilyNotificationData = (data) => {
 
 exports.validateHistoryRequest = (data) => {
     const schema = Joi.object({
-        user_id: Joi.string().required(),
+        user_id: Joi.string().optional(), // user_id không còn bắt buộc nữa
         start_date: Joi.date().iso().optional(),
         end_date: Joi.date().iso().optional(),
     });
     return schema.validate(data);
 };
+
+
 
 exports.validateMultipleIotStatusData = (data) => {
     const schema = Joi.array().items(
