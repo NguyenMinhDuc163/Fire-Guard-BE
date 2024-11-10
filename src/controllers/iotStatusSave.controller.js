@@ -3,9 +3,10 @@ const { validateMultipleIotStatusData } = require('../utils/validation');
 const { createResponse } = require('../utils/responseHelper');
 const { logger } = require('../utils/logger');
 const axios = require('axios');
+require('dotenv').config();
 
 // Địa chỉ IP của ESP8266
-const ESP8266_IP = 'http://192.168.1.50';
+const ESP8266_IP = process.env.ESP8266_IP;
 
 async function toggleBuzzerOnESP8266(status) {
     try {
