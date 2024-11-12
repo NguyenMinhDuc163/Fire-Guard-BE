@@ -30,6 +30,7 @@ exports.handleUserLocation = async (req, res) => {
             res.status(400).json(createResponse('fail', 'Invalid request parameters', 400, []));
         }
     } catch (err) {
+        console.log(err);
         logger.error(`System Error: ${err.message}`, { meta: { request: req.body, error: err } });
         res.status(500).json(createResponse('fail', 'System Error.', 500, [], err.message));
     }

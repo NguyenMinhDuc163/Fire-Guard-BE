@@ -6,6 +6,7 @@ const axios = require('axios');
 let flameSensorCount = 0; // Bộ đếm cho số lần liên tiếp flame_sensor < 500
 let gasLeakCount = 0; // Bộ đếm cho số lần liên tiếp mq2_gas_level = 0 và mq135_air_quality != 0
 const BASE_URL = process.env.BASE_URL;
+const PHONE_NUMBER = process.env.PHONE_NUMBER;
 const NOTIFICATION_INTERVAL = 10 * 1000; // 30 giây
 let lastFireNotificationTime = 0; // Thời gian gửi thông báo cháy gần nhất
 let lastGasLeakNotificationTime = 0; // Thời gian gửi thông báo rò rỉ khí ga gần nhất
@@ -51,7 +52,7 @@ exports.receiveSensorData = async (req, res) => {
                 location: "123 ABC Street",
                 incident_details: "Phát hiện cháy lớn.",
                 timestamp: new Date().toISOString(),
-                phone_number: "+84916562796"
+                phone_number: PHONE_NUMBER
             });
             logger.info('Đã gọi lực lượng cứu hỏa.');
         }
