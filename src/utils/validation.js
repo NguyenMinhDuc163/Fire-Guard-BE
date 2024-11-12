@@ -106,3 +106,15 @@ exports.validateLoginData = (data) => {
     });
     return schema.validate(data);
 };
+
+
+exports.validateUserLocationData = (data) => {
+    const schema = Joi.object({
+        userID: Joi.number().optional(),
+        longitude: Joi.string().optional(),
+        latitude: Joi.string().optional(),
+        type: Joi.string().valid('all', 'longitude').optional(),
+    });
+
+    return schema.validate(data);
+};
