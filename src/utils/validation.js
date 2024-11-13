@@ -113,7 +113,7 @@ exports.validateUserLocationData = (data) => {
         userID: Joi.number().optional(),
         longitude: Joi.string().optional(),
         latitude: Joi.string().optional(),
-        type: Joi.string().valid('all', 'longitude').optional(),
+        type: Joi.string().valid('all', 'longitude', 'save').optional(),
     });
 
     return schema.validate(data);

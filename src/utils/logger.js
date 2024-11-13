@@ -76,9 +76,9 @@ const logMiddleware = (req, res, next) => {
         res.body = data;  // Gán body của response trước khi gửi
         return oldSend.apply(res, arguments);
     };
-
     res.on('finish', () => {
         const message = `${req.method} ${req.originalUrl} ${res.statusCode}`;
+
         const meta = {
             request: {
                 method: req.method,

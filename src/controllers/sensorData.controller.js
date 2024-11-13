@@ -18,7 +18,7 @@ exports.receiveSensorData = async (req, res) => {
     const { error } = validateSensorData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+        return res.status(400)  .json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
     }
 
     try {

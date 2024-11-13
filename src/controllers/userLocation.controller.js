@@ -18,11 +18,11 @@ exports.handleUserLocation = async (req, res) => {
             const users = await fetchUsers();
             return res.status(200).json(createResponse('success', 'Users fetched successfully', 200, users));
         } else if (type === "longitude") {
-            // Trả về tất cả các cặp toạ độ có từ bảng family_notifications
+            // Trả về tất cả các cặp tọa độ có từ bảng family_notifications
             const coordinates = await fetchCoordinates();
             return res.status(200).json(createResponse('success', 'Coordinates fetched successfully', 200, coordinates));
-        } else if (userID && longitude && latitude) {
-            // Lưu dữ liệu vào bảng family_notifications nếu có userID, longitude và latitude
+        } else if (type === "save" && userID && longitude && latitude) {
+            // Lưu dữ liệu vào bảng family_notifications nếu có type = "save"
             await addUserLocation(userID, longitude, latitude);
             logger.info('Data has been added successfully.', { meta: { request: req.body } });
             res.status(200).json(createResponse('success', 'Data has been added successfully.', 200, []));
@@ -30,7 +30,6 @@ exports.handleUserLocation = async (req, res) => {
             res.status(400).json(createResponse('fail', 'Invalid request parameters', 400, []));
         }
     } catch (err) {
-        console.log(err);
         logger.error(`System Error: ${err.message}`, { meta: { request: req.body, error: err } });
         res.status(500).json(createResponse('fail', 'System Error.', 500, [], err.message));
     }
