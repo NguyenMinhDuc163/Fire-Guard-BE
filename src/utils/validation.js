@@ -114,6 +114,7 @@ exports.validateUserLocationData = (data) => {
         longitude: Joi.string().optional(),
         latitude: Joi.string().optional(),
         type: Joi.string().valid('all', 'longitude', 'save').optional(),
+        is_fire: Joi.boolean().optional(), // is_fire không bắt buộc
     });
 
     return schema.validate(data);

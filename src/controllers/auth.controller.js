@@ -31,20 +31,20 @@ exports.loginUser = async (req, res) => {
     const { error } = validateLoginData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400));
+        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [])); // Sửa data thành []
     }
 
     try {
         const user = await UserModel.findByEmail(req.body.email);
         if (!user) {
             logger.warn('Người dùng không tồn tại.', { meta: { email: req.body.email } });
-            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404));
+            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404, [])); // Sửa data thành []
         }
 
         const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
         if (!isPasswordValid) {
             logger.warn('Mật khẩu không chính xác.', { meta: { email: req.body.email } });
-            return res.status(401).json(createResponse('fail', 'Mật khẩu không chính xác.', 401));
+            return res.status(401).json(createResponse('fail', 'Mật khẩu không chính xác.', 401, [])); // Sửa data thành []
         }
 
         // Tạo JWT token
@@ -64,6 +64,7 @@ exports.loginUser = async (req, res) => {
         res.status(200).json(createResponse('success', 'Đăng nhập thành công.', 200, responseData));
     } catch (err) {
         logger.error(`Lỗi khi đăng nhập: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi khi đăng nhập.', 500, [], err.message));
+        res.status(500).json(createResponse('fail', 'Lỗi khi đăng nhập.', 500, [], err.message)); // Sửa data thành []
     }
 };
+
