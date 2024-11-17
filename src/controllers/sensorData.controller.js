@@ -50,7 +50,14 @@ exports.receiveSensorData = async (req, res) => {
             flameSensorCount = 0; // Reset đếm sau khi gọi cứu hỏa
             await axios.post(`${BASE_URL}/emergency/call`, {
                 location: "123 ABC Street",
-                incident_details: "Phát hiện cháy lớn.",
+                incident_details: "Hello, this is the automatic fire alert system!\n" +
+                    "A fire has been detected at your home. Please evacuate immediately using the nearest exit.\n" +
+                    "\n" +
+                    "Remember: Do not use the elevator; take the stairs instead. If there is smoke, cover your nose and mouth with a wet cloth to protect yourself.\n" +
+                    "\n" +
+                    "The fire department has been notified and is on the way. Stay calm and ensure the safety of yourself and those around you.\n" +
+                    "\n" +
+                    "For further assistance, please call emergency services. Thank you!",
                 timestamp: new Date().toISOString(),
                 phone_number: PHONE_NUMBER
             });

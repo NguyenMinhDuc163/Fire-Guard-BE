@@ -22,7 +22,7 @@ exports.callFireDepartment = async (req, res) => {
     logger.info(`Last call for ${location}: ${lastCall}, Now: ${now}, Diff: ${now - lastCall}`, { meta: { location, lastCall, now } });
 
     // Kiểm tra nếu chưa đủ 5 phút (300000ms)
-    if (now - lastCall < 300000) {
+    if (now - lastCall < 30000) {
         logger.warn(`Yêu cầu gửi thông báo cứu hỏa quá sớm. Vui lòng đợi thêm thời gian.`, { meta: { location, timeDifference: now - lastCall } });
         return res.status(429).json(
             createResponse('fail', 'Vui lòng đợi 5 phút trước khi gửi thông báo cứu hỏa tiếp theo.', 429, [])
