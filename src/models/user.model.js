@@ -19,6 +19,28 @@ class UserModel {
         const result = await pool.query(query, [email]);
         return result.rows[0];
     }
+
+    // Cập nhật mật khẩu
+    static async updatePassword(userId, hashedPassword) {
+        const query = `
+        UPDATE users
+        SET password = $1
+        WHERE id = $2
+    `;
+        const values = [hashedPassword, userId];
+        await pool.query(query, values);
+    }
+
+
+    // Tìm người dùng theo id
+    static async findById(id) {
+        const query = `SELECT * FROM users WHERE id = $1`;
+        const result = await pool.query(query, [id]);
+        return result.rows[0];
+    }
+
 }
+
+
 
 module.exports = UserModel;

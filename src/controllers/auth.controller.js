@@ -68,3 +68,44 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+// Đổi mật khẩu người dùng
+exports.changePassword = async (req, res) => {
+    const { id, oldPassword, newPassword } = req.body;
+
+    // Validate input
+    if (!id || !oldPassword || !newPassword) {
+        logger.error('Validation Error: Missing required fields.', { meta: { request: req.body } });
+        return res.status(400).json(createResponse('fail', 'Thiếu thông tin cần thiết.', 400, []));
+    }
+
+    try {
+        // Tìm người dùng theo id
+        const user = await UserModel.findById(id);
+        if (!user) {
+            logger.warn('Người dùng không tồn tại.', { meta: { id } });
+            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404, []));
+        }
+
+        // Xác thực mật khẩu cũ
+        const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+        if (!isPasswordValid) {
+            logger.warn('Mật khẩu cũ không chính xác.', { meta: { id } });
+            return res.status(401).json(createResponse('fail', 'Mật khẩu cũ không chính xác.', 401, []));
+        }
+
+        // Mã hóa mật khẩu mới
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Cập nhật mật khẩu
+        await UserModel.updatePassword(id, hashedPassword);
+
+        logger.info('Đổi mật khẩu thành công.', { meta: { userId: id } });
+        res.status(200).json(createResponse('success', 'Đổi mật khẩu thành công.', 200, []));
+    } catch (err) {
+        logger.error(`Lỗi khi đổi mật khẩu: ${err.message}`, { meta: { request: req.body, error: err } });
+        res.status(500).json(createResponse('fail', 'Lỗi khi đổi mật khẩu.', 500, [], err.message));
+    }
+};
+
+
+
