@@ -13,12 +13,16 @@ const convertDateToTimestamp = (dateString, isEndOfDay = false) => {
 
 const getHistory = async (user_id, start_date, end_date) => {
     let query = `
-    SELECT id AS incident_id, message, timestamp
+    SELECT 
+        id AS incident_id, 
+        message, 
+        COALESCE(title, '') AS title, 
+        COALESCE(body, '') AS body, 
+        timestamp
     FROM notifications
     `;
     const values = [];
 
-    // Kiểm tra điều kiện tham số và xây dựng câu truy vấn động
     if (user_id) {
         query += `WHERE user_id = $1`;
         values.push(user_id);
@@ -42,6 +46,7 @@ const getHistory = async (user_id, start_date, end_date) => {
     const result = await pool.query(query, values);
     return result.rows;
 };
+
 
 
 
