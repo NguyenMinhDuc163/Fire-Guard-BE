@@ -12,7 +12,7 @@ let lastFireNotificationTime = 0; // Thời gian gửi thông báo cháy gần n
 let lastGasLeakNotificationTime = 0; // Thời gian gửi thông báo rò rỉ khí ga gần nhất
 const FALMECOUNT = 3
 const GASCOUNT = 3
-const SOSCOUNT = 20
+const SOSCOUNT = 10
 
 exports.receiveSensorData = async (req, res) => {
     const { error } = validateSensorData(req.body);
@@ -65,7 +65,7 @@ exports.receiveSensorData = async (req, res) => {
         }
 
         // Kiểm tra điều kiện rò rỉ khí ga
-        if (req.body.mq2_gas_level === 0 || req.body.mq135_air_quality !== 0) {
+        if (req.body.mq2_gas_level !== 0 || req.body.mq135_air_quality !== 0) {
             gasLeakCount += 1;
         } else {
             gasLeakCount = 0; // Reset đếm nếu giá trị không thỏa điều kiện
