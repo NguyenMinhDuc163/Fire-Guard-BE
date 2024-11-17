@@ -12,7 +12,7 @@ let lastFireNotificationTime = 0; // Thời gian gửi thông báo cháy gần n
 let lastGasLeakNotificationTime = 0; // Thời gian gửi thông báo rò rỉ khí ga gần nhất
 const FALMECOUNT = 3
 const GASCOUNT = 3
-const SOSCOUNT = 10
+const SOSCOUNT = 5
 
 exports.receiveSensorData = async (req, res) => {
     const { error } = validateSensorData(req.body);
