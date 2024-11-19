@@ -1,6 +1,7 @@
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf, colorize } = format;
 const pool = require('../configs/db.config');
+const {body} = require("express-validator");
 
 // Hàm lọc ra những headers quan trọng
 const filterHeaders = (headers) => {
@@ -78,7 +79,7 @@ const logMiddleware = (req, res, next) => {
     };
     res.on('finish', () => {
         const message = `${req.method} ${req.originalUrl} ${res.statusCode}`;
-
+        console.log(req.body);
         const meta = {
             request: {
                 method: req.method,
