@@ -65,7 +65,7 @@ exports.receiveSensorData = async (req, res) => {
         }
 
         // Kiểm tra điều kiện rò rỉ khí ga
-        if (req.body.mq2_gas_level === 0 || req.body.mq135_air_quality !== 0) {
+        if (req.body.mq2_gas_level !== 0 || req.body.mq135_air_quality !== 0) {
             gasLeakCount += 1;
         } else {
             gasLeakCount = 0; // Reset đếm nếu giá trị không thỏa điều kiện
