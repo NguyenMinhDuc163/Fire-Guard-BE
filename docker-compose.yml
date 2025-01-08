@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: NguyenDuc@163
       POSTGRES_DB: postgres
     ports:
-      - '5432:5432'
+      - '5432:5432' 
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./ddl.sql:/docker-entrypoint-initdb.d/ddl.sql

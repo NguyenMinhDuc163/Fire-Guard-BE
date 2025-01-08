@@ -43,7 +43,11 @@ getAccessToken()
     });
 
 app.get('/', (req, res) => {
-    res.send('Welcome to the Fire Alarm Backend System');
+    res.json({
+        message: 'Welcome to the Fire Alarm Backend System',
+        status: 'success'
+    });
 });
+
 
 module.exports = app;
