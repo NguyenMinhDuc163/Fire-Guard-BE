@@ -1,4 +1,5 @@
 const express = require('express');
+
 require('dotenv').config();
 const app = express();
 const sensorDataRouter = require('./routes/sensorData.router');
@@ -27,6 +28,9 @@ app.use((req, res, next) => {
     const publicRoutes = [
         '/api/v1/auth/login',
         '/api/v1/auth/register',
+        '/api/v1/auth/forgot_password',
+        '/favicon.ico',
+        '/reset_password_confirm',
         '/'
     ]; // Danh sách các route công khai
 
@@ -61,13 +65,5 @@ getAccessToken()
     .catch((err) => {
         console.error('Lỗi khi lấy token từ Firebase lúc khởi động server:', err);
     });
-
-// Route mặc định (công khai)
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Welcome to the Fire Alarm Backend System',
-        status: 'success'
-    });
-});
 
 module.exports = app;

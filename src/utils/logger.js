@@ -60,7 +60,7 @@ const saveLogToDB = async (level, message, req, res) => {
         req.originalUrl,                                 // URL được gọi
         JSON.stringify(filterHeaders(req.headers)),      // Chỉ lưu các headers quan trọng
         JSON.stringify(req.body),                        // Body của request dưới dạng JSON
-        JSON.stringify(JSON.parse(res.body), null, 0)    // Xoá dấu gạch chéo trong JSON response body
+        res.body ? JSON.stringify(res.body) : null       // Kiểm tra trước khi lưu body
     ];
     try {
         await pool.query(query, values);
@@ -79,23 +79,33 @@ const logMiddleware = (req, res, next) => {
     };
     res.on('finish', () => {
         const message = `${req.method} ${req.originalUrl} ${res.statusCode}`;
-        console.log(req.body);
         const meta = {
             request: {
                 method: req.method,
                 url: req.originalUrl,
-                headers: req.headers,  // Headers đầy đủ, sẽ được lọc khi in ra console và database
+                headers: req.headers, // Headers đầy đủ, sẽ được lọc khi in ra console và database
                 body: req.body,
             },
             response: {
                 statusCode: res.statusCode,
                 statusMessage: res.statusMessage,
-                body: JSON.parse(res.body),  // Đảm bảo response body là JSON khi in ra console và lưu vào database
+                body: null, // Mặc định là null nếu không có body
             },
         };
-        logger.info(message, { meta });  // Log đơn giản ra console
-        saveLogToDB('info', message, req, res);  // Lưu đầy đủ thông tin đã lọc vào database
+
+        // Kiểm tra và parse body nếu là JSON hợp lệ
+        try {
+            if (res.body) {
+                meta.response.body = JSON.parse(res.body);
+            }
+        } catch (err) {
+            console.warn('Không thể parse response body:', err.message);
+        }
+
+        logger.info(message, { meta }); // Log đơn giản ra console
+        saveLogToDB('info', message, req, res); // Lưu đầy đủ thông tin đã lọc vào database
     });
+
     next();
 };
 

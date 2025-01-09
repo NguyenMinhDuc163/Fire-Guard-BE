@@ -4,7 +4,7 @@ const { validateRegisterData, validateLoginData } = require('../utils/validation
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { logger } = require('../utils/logger');
-
+const { sendResetEmail } = require('../services/email.service');
 // Đăng ký người dùng
 exports.registerUser = async (req, res) => {
     const { error } = validateRegisterData(req.body);
@@ -107,5 +107,79 @@ exports.changePassword = async (req, res) => {
     }
 };
 
+exports.requestForgotPassword = async (req, res) => {
+    const { email } = req.body;
 
+    try {
+        // Kiểm tra email có tồn tại không
+        const user = await UserModel.findByEmail(email);
+        if (!user) {
+            logger.warn(`Email không tồn tại: ${email}`);
+            return res.status(404).json(createResponse('fail', 'Email không tồn tại.', 404));
+        }
+
+        // Tạo token reset mật khẩu (hết hạn sau 15 phút)
+        const resetToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+
+        // Gửi email reset mật khẩu
+        // const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+        const resetLink = `${process.env.FRONTEND_URL}?token=${resetToken}`;
+        ;
+        await sendResetEmail(email, resetLink);
+
+        logger.info(`Email reset mật khẩu đã được gửi tới: ${email}`);
+        res.status(200).json(createResponse('success', 'Email reset mật khẩu đã được gửi.', 200, []));
+    } catch (err) {
+        logger.error(`Lỗi khi yêu cầu reset mật khẩu: ${err.message}`);
+        res.status(500).json(createResponse('fail', 'Lỗi server.', 500));
+    }
+};
+
+// API đặt lại mật khẩu (quên mật khẩu)
+exports.resetPassword = async (req, res) => {
+    // Lấy token từ header Authorization
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Tách 'Bearer token'
+
+    const { newPassword } = req.body; // Chỉ lấy newPassword từ body
+
+    // Validate dữ liệu đầu vào
+    if (!token || !newPassword) {
+        logger.error('Validation Error: Missing required fields.', { meta: { request: req.body } });
+        return res.status(400).json(createResponse('fail', 'Thiếu thông tin cần thiết.', 400));
+    }
+
+    try {
+        // Xác minh token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        logger.info('Token đã được xác minh.', { meta: { decoded } });
+
+        // Kiểm tra người dùng tồn tại
+        const user = await UserModel.findById(decoded.userId);
+        if (!user) {
+            logger.warn('Người dùng không tồn tại.', { meta: { userId: decoded.userId } });
+            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404));
+        }
+
+        // Mã hóa mật khẩu mới
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Cập nhật mật khẩu
+        await UserModel.updatePassword(user.id, hashedPassword);
+
+        logger.info('Mật khẩu đã được cập nhật thành công.', { meta: { userId: user.id } });
+        res.status(200).json(createResponse('success', 'Mật khẩu đã được cập nhật thành công.', 200));
+    } catch (err) {
+        if (err.name === 'JsonWebTokenError') {
+            logger.error('Token không hợp lệ.', { meta: { error: err.message } });
+            return res.status(401).json(createResponse('fail', 'Token không hợp lệ.', 401));
+        }
+        if (err.name === 'TokenExpiredError') {
+            logger.error('Token đã hết hạn.', { meta: { error: err.message } });
+            return res.status(401).json(createResponse('fail', 'Token đã hết hạn.', 401));
+        }
+        logger.error(`Lỗi khi đặt lại mật khẩu: ${err.message}`, { meta: { request: req.body } });
+        res.status(500).json(createResponse('fail', 'Lỗi server.', 500, null, err.message));
+    }
+};
 
