@@ -25,7 +25,7 @@ ${resetLink}
 Liên kết này sẽ hết hạn sau 15 phút.
 
 Trân trọng,
-Đội ngũ hỗ trợ - Your App`,
+Đội ngũ hỗ trợ - Fire Guard`,
         html: `
             <p>Xin chào,</p>
             <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu từ tài khoản của bạn. Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
