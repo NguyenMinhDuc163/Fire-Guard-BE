@@ -12,12 +12,29 @@ exports.sendResetEmail = async (email, resetLink) => {
     });
 
     const mailOptions = {
-        from: '"Your App" <no-reply@example.com>',
+        from: '"Support Team - Fire Guard" <no-reply@example.com>', // Tên hiển thị trong email
         to: email,
-        subject: 'Đặt lại mật khẩu',
-        text: `Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào liên kết sau để tiếp tục: ${resetLink}`,
-        html: `<p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào liên kết sau để tiếp tục:</p>
-               <a href="${resetLink}">${resetLink}</a>`,
+        subject: 'Yêu cầu đặt lại mật khẩu',
+        text: `Xin chào,
+
+Chúng tôi nhận được yêu cầu đặt lại mật khẩu từ tài khoản của bạn. Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.
+
+Để đặt lại mật khẩu, hãy nhấn vào liên kết sau:
+${resetLink}
+
+Liên kết này sẽ hết hạn sau 15 phút.
+
+Trân trọng,
+Đội ngũ hỗ trợ - Your App`,
+        html: `
+            <p>Xin chào,</p>
+            <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu từ tài khoản của bạn. Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
+            <p>Để đặt lại mật khẩu, hãy nhấn vào liên kết sau:</p>
+            <p><a href="${resetLink}" style="color: #007bff; text-decoration: none;">Đặt lại mật khẩu</a></p>
+            <p style="font-size: 12px; color: #555;">(Liên kết này sẽ hết hạn sau 15 phút.)</p>
+            <p>Trân trọng,</p>
+            <p><strong>Đội ngũ hỗ trợ - Your App</strong></p>
+        `,
     };
 
     await transporter.sendMail(mailOptions);
