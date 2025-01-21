@@ -1,0 +1,36 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Lấy mã nguồn
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Cài đặt SSH key để kết nối server
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    # 3. Deploy ứng dụng trên server qua SSH
+    - name: Deploy to server
+      run: |
+        ssh -o StrictHostKeyChecking=no user@your-server-ip << 'EOF'
+          # Chuyển đến thư mục dự án
+          cd /var/www/your-app
+
+          # Pull mã nguồn mới nhất
+          git pull origin main
+
+          # Build và khởi chạy container
+          docker-compose down
+          docker-compose up -d --build
+        EOF
