@@ -10,7 +10,7 @@ exports.sendResetEmail = async (email, resetLink) => {
             pass: process.env.EMAIL_PASS,
         },
     });
-    console.log(resetLink);
+    console.log("sendResetEmail", email, resetLink);
     const mailOptions = {
         from: '"Support Team - Fire Guard" <no-reply@example.com>', // Tên hiển thị trong email
         to: email,

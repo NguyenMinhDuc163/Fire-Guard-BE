@@ -124,7 +124,7 @@ exports.requestForgotPassword = async (req, res) => {
         // Gửi email reset mật khẩu
         // const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
         const resetLink = `${process.env.FRONTEND_URL}?token=${resetToken}`;
-        ;
+        console.log("resetLink", resetLink);
         await sendResetEmail(email, resetLink);
 
         logger.info(`Email reset mật khẩu đã được gửi tới: ${email}`);
