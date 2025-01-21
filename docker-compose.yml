@@ -1,37 +1,35 @@
+version: '3.8'
+
 services:
   app:
-    image: nguyenduc1603/fire_guard_be:v1.0.0
+    container_name: fire_guard_app # Tên container ứng dụng
+    image: nguyenduc1603/fire_guard_service:v1.0.1
+    build:
+      context: .
     ports:
-      - '3000:3000'
+      - "3000:3000" # Map port của ứng dụng ra ngoài
     environment:
-      NODE_ENV: production
-      PORT: 3000
-      DB_USER: postgres
-      DB_PASSWORD: NguyenDuc@163
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: postgres
+      - DB_HOST=fire_guard_db # Hostname của database (trùng với container_name của PostgreSQL)
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=NguyenDuc@163
+      - DB_NAME=fire_guard_db
+      - NODE_ENV=production
     depends_on:
-      - db
-    networks:
-      - app-network
+      - database # Đảm bảo database khởi động trước ứng dụng
 
-  db:
-    image: postgres:13
+  database:
+    container_name: fire_guard_db # Tên container database
+    image: postgres:latest
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: NguyenDuc@163
-      POSTGRES_DB: postgres
+      POSTGRES_DB: fire_guard_db
     ports:
-      - '5432:5432' 
+      - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
-      - ./ddl.sql:/docker-entrypoint-initdb.d/ddl.sql
-    networks:
-      - app-network
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  db-data:
-
-networks:
-  app-network:
+  postgres-data:
+    driver: local
