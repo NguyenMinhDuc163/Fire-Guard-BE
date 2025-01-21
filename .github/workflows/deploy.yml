@@ -23,9 +23,9 @@ jobs:
     # 3. Deploy ứng dụng trên server qua SSH
     - name: Deploy to server
       run: |
-        ssh -o StrictHostKeyChecking=no user@your-server-ip << 'EOF'
+        ssh -o StrictHostKeyChecking=no nguyenduc163@20.2.33.95 << 'EOF'
           # Chuyển đến thư mục dự án
-          cd /var/www/your-app
+          cd /home/nguyenduc163/Fire-Guard-BE
 
           # Pull mã nguồn mới nhất
           git pull origin main
