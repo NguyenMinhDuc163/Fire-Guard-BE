@@ -2,6 +2,7 @@ const express = require('express');
 
 require('dotenv').config();
 const app = express();
+const cors = require('cors');
 const sensorDataRouter = require('./routes/sensorData.router');
 const dataSaveRouter = require('./routes/dataSave.router');
 const notificationsRouter = require('./routes/notifications.router');
@@ -23,14 +24,19 @@ const { authenticateJWT } = require('./middleware/authMiddleware'); // Middlewar
 app.use(express.json());
 app.use(logMiddleware);
 
+// Cấu hình CORS
+app.use(cors({
+    origin: 'https://reset.nguyenduc.click', // Miền được phép
+    methods: 'GET,POST,PUT,DELETE', // Các phương thức được phép
+    allowedHeaders: 'Content-Type,Authorization', // Các header được phép
+}));
+
 // Middleware xác thực JWT cho toàn bộ route, trừ route công khai
 app.use((req, res, next) => {
     const publicRoutes = [
         '/api/v1/auth/login',
         '/api/v1/auth/register',
         '/api/v1/auth/forgot_password',
-        '/favicon.ico',
-        '/reset_password_confirm',
         '/'
     ]; // Danh sách các route công khai
 
@@ -41,6 +47,9 @@ app.use((req, res, next) => {
     authenticateJWT(req, res, next); // Thực hiện xác thực JWT
 });
 
+// app.get('/favicon.ico', (req, res) => {
+//     res.status(204).send(); // Trả về mã 204 nếu không có favicon
+// });
 // Route công khai
 app.use(authRouter);
 
