@@ -65,6 +65,14 @@ app.use(iotStatusSaveRouter);
 app.use(guidesAndNewsRouter);
 app.use(guidesAndNewsAddRouter);
 app.use(userLocationRouter);
+app.use((req, res, next) => {
+    res.status(404).json({
+        code: 404,
+        status: 'fail',
+        message: 'API endpoint not found',
+        error: ''
+    });
+});
 
 // Khi server khởi động, gọi Firebase để lấy token mới và lưu vào DB
 getAccessToken()

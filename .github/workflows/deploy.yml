@@ -1,0 +1,42 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Lấy mã nguồn từ repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Cài đặt SSH key để kết nối server
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 3. Deploy ứng dụng trên server qua SSH
+      - name: Deploy using Docker Compose
+        run: |
+          ssh -o StrictHostKeyChecking=no nguyenduc163@20.2.33.95 << 'EOF'
+            set -e  # Dừng nếu có lỗi
+          
+            echo "Navigating to the project directory..."
+            cd /home/nguyenduc163/Fire-Guard-BE
+          
+            echo "Pulling the latest code from GitHub..."
+            git pull origin main
+          
+            echo "Stopping and removing old containers..."
+            docker-compose down
+          
+            echo "Building and starting containers with Docker Compose..."
+            docker-compose up -d --build
+          
+            echo "Deployment completed successfully!"
+          EOF
