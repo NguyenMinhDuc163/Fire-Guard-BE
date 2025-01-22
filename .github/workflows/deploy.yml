@@ -14,13 +14,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 2. Thiết lập SSH để kết nối server
+    # 2. Lấy thông tin commit
+    - name: Get commit details
+      id: commit_info
+      run: |
+        echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')" >> $GITHUB_ENV
+        echo "COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')" >> $GITHUB_ENV
+        echo "COMMIT_TIMESTAMP=$(git log -1 --pretty=format:'%cd' --date=format:'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        echo "COMMIT_URL=https://github.com/${{ github.repository }}/commit/${{ github.sha }}" >> $GITHUB_ENV
+
+    # 3. Thiết lập SSH để kết nối server
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    # 3. Triển khai ứng dụng qua SSH
+    # 4. Triển khai ứng dụng qua SSH
     - name: Deploy using Docker Compose
       run: |
         ssh -o StrictHostKeyChecking=no nguyenduc163@20.2.33.95 << 'EOF'
@@ -36,18 +45,31 @@ jobs:
           echo "Deployment completed successfully!"
         EOF
 
-    # 4. Gửi thông báo khi build thành công
+    # 5. Gửi thông báo khi build thành công
     - name: Send Telegram Notification - Success
       if: success()
       run: |
         curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
         -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-        -d "text=✅ Build and Deployment Succeeded! 🚀"
+        -d "parse_mode=Markdown" \
+        -d text="✅ *Build Succeeded!* 🚀
+        *Repository:* [${{ github.repository }}](https://github.com/${{ github.repository }})
+        *Commit Author:* ${{ env.COMMIT_AUTHOR }}
+        *Commit Message:* ${{ env.COMMIT_MESSAGE }}
+        *Timestamp:* ${{ env.COMMIT_TIMESTAMP }}
+        *Commit URL:* [View Commit](${{ env.COMMIT_URL }})"
 
-    # 5. Gửi thông báo khi build thất bại
+    # 6. Gửi thông báo khi build thất bại
     - name: Send Telegram Notification - Failure
       if: failure()
       run: |
         curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
         -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-        -d "text=❌ Build or Deployment Failed! Check the logs for details."
+        -d "parse_mode=Markdown" \
+        -d text="❌ *Build Failed!* 🚨
+        *Repository:* [${{ github.repository }}](https://github.com/${{ github.repository }})
+        *Commit Author:* ${{ env.COMMIT_AUTHOR }}
+        *Commit Message:* ${{ env.COMMIT_MESSAGE }}
+        *Timestamp:* ${{ env.COMMIT_TIMESTAMP }}
+        *Commit URL:* [View Commit](${{ env.COMMIT_URL }})
+        *Reason:* Check logs in [GitHub Actions](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
