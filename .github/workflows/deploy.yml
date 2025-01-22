@@ -1,4 +1,4 @@
-name: Deploy to Server
+name: Deploy to Server with Telegram Notification
 
 on:
   push:
@@ -10,33 +10,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Lấy mã nguồn từ repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # 1. Lấy mã nguồn từ GitHub
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # 2. Cài đặt SSH key để kết nối server
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    # 2. Thiết lập SSH để kết nối server
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # 3. Deploy ứng dụng trên server qua SSH
-      - name: Deploy using Docker Compose
-        run: |
-          ssh -o StrictHostKeyChecking=no nguyenduc163@20.2.33.95 << 'EOF'
-            set -e  # Dừng nếu có lỗi
-          
-            echo "Navigating to the project directory..."
-            cd /home/nguyenduc163/Fire-Guard-BE
-          
-            echo "Pulling the latest code from GitHub..."
-            git pull origin main
-          
-            echo "Stopping and removing old containers..."
-            docker-compose down
-          
-            echo "Building and starting containers with Docker Compose..."
-            docker-compose up -d --build
-          
-            echo "Deployment completed successfully!"
-          EOF
+    # 3. Triển khai ứng dụng qua SSH
+    - name: Deploy using Docker Compose
+      run: |
+        ssh -o StrictHostKeyChecking=no nguyenduc163@20.2.33.95 << 'EOF'
+          set -e
+          echo "Navigating to project directory..."
+          cd /home/nguyenduc163/Fire-Guard-BE
+          echo "Pulling latest changes from GitHub..."
+          git pull origin main
+          echo "Stopping old containers..."
+          docker-compose down
+          echo "Building and starting new containers..."
+          docker-compose up -d --build
+          echo "Deployment completed successfully!"
+        EOF
+
+    # 4. Gửi thông báo khi build thành công
+    - name: Send Telegram Notification - Success
+      if: success()
+      run: |
+        curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+        -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+        -d "text=✅ Build and Deployment Succeeded! 🚀"
+
+    # 5. Gửi thông báo khi build thất bại
+    - name: Send Telegram Notification - Failure
+      if: failure()
+      run: |
+        curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+        -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+        -d "text=❌ Build or Deployment Failed! Check the logs for details."
