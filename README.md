@@ -29,5 +29,5 @@ Khởi động dịch vụ:
 `docker-compose up -d`  
 Dừng dịch vụ:  
 `docker-compose down`  
-Dừng và xóa toàn bộ container cùng dữ liệu:  
+Dừng và xóa toàn bộ container cùng dữ liệu:   
 `docker-compose down -v`
