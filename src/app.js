@@ -15,6 +15,7 @@ const guidesAndNewsRouter = require('./routes/guidesAndNews.router');
 const guidesAndNewsAddRouter = require('./routes/guidesAndNewsAdd.router');
 const authRouter = require('./routes/auth.router'); // Route công khai
 const userLocationRouter = require('./routes/userLocation.router');
+const familyRouter = require('./routes/family.routes');
 
 const { logMiddleware } = require('./utils/logger');
 const { getAccessToken } = require('./configs/token.service'); // Import service để gọi đến Firebase
@@ -65,6 +66,9 @@ app.use(iotStatusSaveRouter);
 app.use(guidesAndNewsRouter);
 app.use(guidesAndNewsAddRouter);
 app.use(userLocationRouter);
+app.use(familyRouter);
+
+
 app.use((req, res, next) => {
     res.status(404).json({
         code: 404,

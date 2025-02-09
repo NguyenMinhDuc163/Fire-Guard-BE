@@ -130,3 +130,12 @@ exports.validateChangePasswordData = (data) => {
     return schema.validate(data);
 };
 
+
+exports.validateFamilyNotificationData = (data) => {
+    const schema = Joi.object({
+        user_id: Joi.number().integer().required(),
+        family_member_id: Joi.number().integer().required()
+    });
+
+    return schema.validate(data);
+};

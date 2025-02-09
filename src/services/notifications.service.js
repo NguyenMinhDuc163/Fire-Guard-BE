@@ -3,24 +3,31 @@ const pool = require('../configs/db.config');
 const { getSavedAccessToken } = require('../configs/token.service');
 const NotificationModel = require('../models/notification.model');
 
-// Hàm gửi thông báo tới tất cả người dùng và ghi log vào DB
-const sendNotificationToAllUsers = async (title, body) => {
+// Hàm gửi thông báo tới danh sách người thân của chủ sở hữu
+const sendNotificationToFamilyMembers = async (ownerId, title, body) => {
     try {
-        const result = await pool.query('SELECT id, token_fcm FROM users WHERE token_fcm IS NOT NULL');
-        const users = result.rows;
+        // Lấy danh sách người thân từ bảng family_notifications
+        const result = await pool.query(
+            `SELECT fn.family_member_id, u.token_fcm 
+             FROM family_notifications fn
+             JOIN users u ON fn.family_member_id = u.id
+             WHERE fn.user_id = $1 AND u.token_fcm IS NOT NULL`,
+            [ownerId]
+        );
+        const familyMembers = result.rows;
 
-        if (users.length === 0) {
-            throw new Error('Không tìm thấy người dùng nào có token FCM hợp lệ.');
+        if (familyMembers.length === 0) {
+            throw new Error('Không tìm thấy người thân nào có token FCM hợp lệ.');
         }
 
         const accessToken = await getSavedAccessToken();
 
-        const promises = users.map(user =>
+        const promises = familyMembers.map(member =>
             axios.post(
                 'https://fcm.googleapis.com/v1/projects/fire-guard-5a3b2/messages:send',
                 {
                     message: {
-                        token: user.token_fcm,
+                        token: member.token_fcm,
                         notification: { title, body },
                         android: {
                             notification: { channel_id: 'fire_alarm_channel', sound: 'default' },
@@ -36,10 +43,10 @@ const sendNotificationToAllUsers = async (title, body) => {
             ).then(async (response) => {
                 // Lưu log thành công vào database
                 await NotificationModel.save({
-                    user_id: user.id,
+                    user_id: member.family_member_id,
                     title,
                     body,
-                    fcm_token: user.token_fcm,
+                    fcm_token: member.token_fcm,
                     status: 'success',
                     message: 'Thông báo đã được gửi thành công.'
                 });
@@ -47,10 +54,10 @@ const sendNotificationToAllUsers = async (title, body) => {
             }).catch(async (error) => {
                 // Lưu log thất bại vào database
                 await NotificationModel.save({
-                    user_id: user.id,
+                    user_id: member.family_member_id,
                     title,
                     body,
-                    fcm_token: user.token_fcm,
+                    fcm_token: member.token_fcm,
                     status: 'fail',
                     message: error.message
                 });
@@ -62,14 +69,14 @@ const sendNotificationToAllUsers = async (title, body) => {
         const results = await Promise.allSettled(promises);
 
         results.forEach((result, index) => {
-            const userToken = users[index].token_fcm;
+            const userToken = familyMembers[index].token_fcm;
             if (result.status === 'fulfilled') {
                 console.log(`Gửi thông báo tới user ${userToken} thành công.`);
             } else {
                 console.error(`Lỗi gửi thông báo tới user ${userToken}:`, result.reason.message);
             }
         });
-8
+
         return results;
     } catch (error) {
         console.error('Lỗi khi gửi thông báo:', error.message);
@@ -77,4 +84,4 @@ const sendNotificationToAllUsers = async (title, body) => {
     }
 };
 
-module.exports = { sendNotificationToAllUsers };
+module.exports = { sendNotificationToFamilyMembers };
