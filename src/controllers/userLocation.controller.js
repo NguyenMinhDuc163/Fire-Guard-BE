@@ -23,6 +23,7 @@ exports.handleUserLocation = async (req, res) => {
             return res.status(200).json(createResponse('success', 'Coordinates fetched successfully', 200, coordinates));
         } else if (type === "save" && userID && longitude && latitude) {
             // Lưu dữ liệu vào bảng family_notifications, is_fire không bắt buộc
+
             await addUserLocation(userID, longitude, latitude, is_fire || false);
             logger.info('Data has been added successfully.', { meta: { request: req.body } });
             res.status(200).json(createResponse('success', 'Data has been added successfully.', 200, []));

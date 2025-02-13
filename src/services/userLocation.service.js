@@ -21,13 +21,12 @@ const fetchCoordinates = async () => {
 const addUserLocation = async (userID, longitude, latitude, isFire = false) => {
     const userQuery = 'SELECT token_fcm FROM users WHERE id = $1';
     const userResult = await pool.query(userQuery, [userID]);
-
     if (userResult.rowCount === 0) {
         throw new Error('User not found');
     }
 
     const token_fcm = userResult.rows[0].token_fcm;
-    const familyMemberId = '';
+    const familyMemberId = userID;
     const phoneNumber = '';
     const message = 'Da luu du lieu thanh cong';
     const status = 'SUCC';
