@@ -14,15 +14,56 @@ exports.registerUser = async (req, res) => {
     }
 
     try {
+        // Kiểm tra xem người dùng đã tồn tại chưa
+        const existingUser = await UserModel.findByEmail(req.body.email);
+
+        if (existingUser) {
+            return res.status(400).json(createResponse('fail', 'Email đã được sử dụng.', 400));
+        }
+
+        // Mã hóa mật khẩu
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        // Thêm mới người dùng
         const newUser = await UserModel.register({ ...req.body, password: hashedPassword });
 
         logger.info('Người dùng đã được đăng ký thành công.', { meta: { userId: newUser.id } });
 
-        res.status(201).json(createResponse('success', 'Người dùng đã được đăng ký thành công.', 201, [newUser]));
+        return res.status(201).json(createResponse('success', 'Người dùng đã được đăng ký thành công.', 201, [newUser]));
     } catch (err) {
         logger.error(`Lỗi khi đăng ký người dùng: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi khi đăng ký người dùng.', 500, [], err.message));
+        return res.status(500).json(createResponse('fail', 'Lỗi khi đăng ký người dùng.', 500, [], err.message));
+    }
+};
+// update thong tin nguoi dung
+exports.updateUserInfo = async (req, res) => {
+    const { id, email, phone_number, click_send_name, click_send_key } = req.body;
+
+    // Kiểm tra xem ID có được truyền hay không
+    if (!id) {
+        return res.status(400).json(createResponse('fail', 'ID người dùng là bắt buộc.', 400));
+    }
+
+    try {
+        // Kiểm tra xem người dùng có tồn tại không
+        const existingUser = await UserModel.findById(id);
+
+        if (!existingUser) {
+            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404));
+        }
+
+        // Cập nhật thông tin người dùng
+        const updatedUser = await UserModel.updateUser(id, {
+            email,
+            phone_number,
+            click_send_name,
+            click_send_key
+        });
+
+        return res.status(200).json(createResponse('success', 'Thông tin người dùng đã được cập nhật thành công.', 200, [updatedUser]));
+    } catch (err) {
+        logger.error(`Lỗi khi cập nhật thông tin người dùng: ${err.message}`, { meta: { request: req.body, error: err } });
+        return res.status(500).json(createResponse('fail', 'Lỗi khi cập nhật thông tin người dùng.', 500, [], err.message));
     }
 };
 

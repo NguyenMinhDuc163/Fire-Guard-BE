@@ -18,12 +18,13 @@ exports.addFamilyMember = async (req, res) => {
     try {
         logger.info('Bắt đầu thêm người thân.', { meta: { user_id, family_member_id } });
 
-        const newFamilyMember = await addFamilyMember(user_id, family_member_id);
+        // Gọi service để thêm người thân và lấy danh sách người thân
+        const familyMembers = await addFamilyMember(user_id, family_member_id);
 
         logger.info(`Đã thêm người thân ${family_member_id} cho chủ sở hữu ${user_id}.`);
 
         res.status(201).json(
-            createResponse('success', 'Đã thêm người thân vào danh sách.', 201, newFamilyMember)
+            createResponse('success', 'Đã thêm người thân vào danh sách.', 201, familyMembers)
         );
     } catch (error) {
         logger.error(`Lỗi khi thêm người thân: ${error.message}`, { meta: { user_id, family_member_id, error } });

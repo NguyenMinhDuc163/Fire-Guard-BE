@@ -4,11 +4,19 @@ class UserModel {
     // Đăng ký người dùng mới
     static async register(data) {
         const query = `
-            INSERT INTO users (username, email, password, token_fcm)
-            VALUES ($1, $2, $3, $4)
-            RETURNING id, username, email, created_at;
-        `;
-        const values = [data.username, data.email, data.password, data.token_fcm];
+        INSERT INTO users (username, email, password, token_fcm, phone_number, click_send_name, click_send_key)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, username, email, phone_number, click_send_name, click_send_key, created_at;
+    `;
+        const values = [
+            data.username,
+            data.email,
+            data.password,
+            data.token_fcm || null,
+            data.phone_number || null,
+            data.click_send_name || null,
+            data.click_send_key || null
+        ];
         const result = await pool.query(query, values);
         return result.rows[0];
     }
@@ -38,6 +46,30 @@ class UserModel {
         const result = await pool.query(query, [id]);
         return result.rows[0];
     }
+    // update user
+    static async updateUser(userId, data) {
+        const query = `
+        UPDATE users
+        SET 
+            email = COALESCE($1, email),
+            phone_number = COALESCE($2, phone_number),
+            click_send_name = COALESCE($3, click_send_name),
+            click_send_key = COALESCE($4, click_send_key),
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $5
+        RETURNING id, username, email, phone_number, click_send_name, click_send_key, updated_at;
+    `;
+        const values = [
+            data.email || null,
+            data.phone_number || null,
+            data.click_send_name || null,
+            data.click_send_key || null,
+            userId
+        ];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
+
 
 }
 

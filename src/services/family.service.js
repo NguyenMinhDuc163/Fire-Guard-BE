@@ -3,7 +3,7 @@ const pool = require('../configs/db.config');
 // Hàm thêm người thân vào danh sách
 const addFamilyMember = async (ownerId, familyMemberId) => {
     try {
-        // Kiểm tra xem familyMemberId có tồn tại trong users không
+        // Kiểm tra xem familyMemberId có tồn tại trong bảng users không
         const userCheck = await pool.query('SELECT id, phone_number, token_fcm FROM users WHERE id = $1', [familyMemberId]);
 
         if (userCheck.rows.length === 0) {
@@ -19,7 +19,8 @@ const addFamilyMember = async (ownerId, familyMemberId) => {
         );
 
         if (checkExist.rows.length > 0) {
-            throw new Error('Người thân này đã có trong danh sách.');
+            // Trả về mảng rỗng nếu người thân đã tồn tại
+            return [];
         }
 
         // Chèn dữ liệu vào bảng family_notifications
@@ -30,13 +31,23 @@ const addFamilyMember = async (ownerId, familyMemberId) => {
         `;
         const values = [ownerId, familyMemberId, phone_number, token_fcm];
 
-        const result = await pool.query(insertQuery, values);
-        return result.rows[0];
+        await pool.query(insertQuery, values);
+
+        // Lấy danh sách tất cả người thân của ownerId
+        const familyListQuery = `
+            SELECT fn.family_member_id, u.username, fn.phone_number, fn.token_fcm
+            FROM family_notifications fn
+            JOIN users u ON fn.family_member_id = u.id
+            WHERE fn.user_id = $1
+        `;
+        const familyList = await pool.query(familyListQuery, [ownerId]);
+
+        return familyList.rows; // Trả về danh sách người thân (mảng)
     } catch (error) {
-        throw error;
+        // Nếu có lỗi, trả về mảng rỗng
+        return [];
     }
 };
-
 // Hàm lấy danh sách người thân của một user
 const getFamilyMembers = async (ownerId) => {
     try {
