@@ -18,7 +18,9 @@ class UserModel {
             data.click_send_key || null
         ];
         const result = await pool.query(query, values);
-        return result.rows[0];
+
+        // Bọc object trong một mảng trước khi trả về
+        return [result.rows[0]];
     }
 
     // Tìm người dùng theo email

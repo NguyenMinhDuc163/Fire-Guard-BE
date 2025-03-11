@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trạng thái giao hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .status-container {
+            padding: 20px;
+        }
+
+        .status-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status-step .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .status-step.completed .step-circle {
+            background-color: #4CAF50;
+        }
+
+        .status-step.current .step-circle {
+            background-color: #ff9800;
+        }
+
+        .status-step p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .status-summary {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .status-summary h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .status-summary p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .back-to-home-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .back-to-home-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Trạng thái giao hàng</h1>
+    <p>Kiểm tra tiến độ đơn hàng của bạn</p>
+</div>
+
+<div class="status-container">
+    <!-- Các bước giao hàng -->
+    <div class="status-step completed">
+        <div class="step-circle">1</div>
+        <p>Đơn hàng đã được đặt</p>
+    </div>
+
+    <div class="status-step completed">
+        <div class="step-circle">2</div>
+        <p>Đơn hàng đang được xử lý</p>
+    </div>
+
+    <div class="status-step current">
+        <div class="step-circle">3</div>
+        <p>Đang giao hàng</p>
+    </div>
+
+    <div class="status-step">
+        <div class="step-circle">4</div>
+        <p>Đơn hàng đã được giao</p>
+    </div>
+
+    <!-- Tóm tắt trạng thái đơn hàng -->
+    <div class="status-summary">
+        <h3>Tóm tắt đơn hàng:</h3>
+        <p><strong>Ngày đặt:</strong> 15/02/2025</p>
+        <p><strong>Thời gian dự kiến giao hàng:</strong> 17/02/2025</p>
+        <p><strong>Địa chỉ giao hàng:</strong> Trần Phú Hà Đông Hà Nội</p>
+    </div>
+
+    <!-- Nút quay lại trang chủ -->
+    <button class="back-to-home-btn">Quay lại trang chủ</button>
+</div>
+</body>
+</html>

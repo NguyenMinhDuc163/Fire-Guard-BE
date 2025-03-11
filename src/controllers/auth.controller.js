@@ -10,7 +10,9 @@ exports.registerUser = async (req, res) => {
     const { error } = validateRegisterData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400));
+        return res.status(400).json(
+            createResponse('fail', error.details[0].message, 400, [])
+        );
     }
 
     try {
@@ -18,21 +20,27 @@ exports.registerUser = async (req, res) => {
         const existingUser = await UserModel.findByEmail(req.body.email);
 
         if (existingUser) {
-            return res.status(400).json(createResponse('fail', 'Email đã được sử dụng.', 400));
+            return res.status(400).json(
+                createResponse('fail', 'Email đã được sử dụng.', 400, [])
+            );
         }
 
         // Mã hóa mật khẩu
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-        // Thêm mới người dùng
-        const newUser = await UserModel.register({ ...req.body, password: hashedPassword });
+        // Thêm mới người dùng và lấy danh sách tất cả người dùng
+        const allUsers = await UserModel.register({ ...req.body, password: hashedPassword });
 
-        logger.info('Người dùng đã được đăng ký thành công.', { meta: { userId: newUser.id } });
+        logger.info('Người dùng đã được đăng ký thành công.', { meta: { email: req.body.email } });
 
-        return res.status(201).json(createResponse('success', 'Người dùng đã được đăng ký thành công.', 201, [newUser]));
+        return res.status(201).json(
+            createResponse('success', 'Người dùng đã được đăng ký thành công.', 201, allUsers)
+        );
     } catch (err) {
         logger.error(`Lỗi khi đăng ký người dùng: ${err.message}`, { meta: { request: req.body, error: err } });
-        return res.status(500).json(createResponse('fail', 'Lỗi khi đăng ký người dùng.', 500, [], err.message));
+        return res.status(500).json(
+            createResponse('fail', 'Lỗi khi đăng ký người dùng.', 500, [], err.message)
+        );
     }
 };
 // update thong tin nguoi dung
