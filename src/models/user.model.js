@@ -24,10 +24,37 @@ class UserModel {
     }
 
     // Tìm người dùng theo email
+    // static async findByEmail(email) {
+    //     const query = `SELECT * FROM users WHERE email = $1`;
+    //     const result = await pool.query(query, [email]);
+    //     return result.rows[0];
+    // }
+
     static async findByEmail(email) {
+        // Truy vấn để tìm người dùng theo email
         const query = `SELECT * FROM users WHERE email = $1`;
         const result = await pool.query(query, [email]);
-        return result.rows[0];
+
+        // Nếu không tìm thấy người dùng, trả về null
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const user = result.rows[0];
+
+        // Truy vấn riêng để kiểm tra người dùng có phải là admin không
+        const adminCheckQuery = `SELECT 1 FROM admins WHERE user_id = $1 LIMIT 1`;
+        const adminCheckResult = await pool.query(adminCheckQuery, [user.id]);
+
+        // Trả về thông tin người dùng và thông tin quyền admin
+        return {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            phone_number: user.phone_number,
+            password: user.password,
+            is_admin: adminCheckResult.rows.length > 0 ? "1" : 0
+        };
     }
 
     // Cập nhật mật khẩu

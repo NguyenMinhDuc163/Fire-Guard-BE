@@ -1,4 +1,4 @@
-const { addFamilyMember, getFamilyMembers } = require('../services/family.service');
+const { addFamilyMember, getFamilyMembers, removeFamilyMember} = require('../services/family.service');
 const { createResponse } = require('../utils/responseHelper');
 const { logger } = require('../utils/logger');
 const { validateFamilyNotificationData } = require('../utils/validation');
@@ -55,3 +55,35 @@ exports.getFamilyMembers = async (req, res) => {
         );
     }
 };
+
+exports.removeFamilyMember = async (req, res) => {
+    const { user_id, family_member_id } = req.body;
+
+    // Validate dữ liệu đầu vào
+    const { error } = validateFamilyNotificationData(req.body);
+    if (error) {
+        return res.status(400).json(
+            createResponse('fail', error.details[0].message, 400)
+        );
+    }
+
+
+    try {
+        logger.info('Bắt đầu xáa nguoi than', { meta: { user_id, family_member_id } });
+
+        // Gọi service để thêm người thân và lấy danh sách người thân
+        const FamilyMember = await removeFamilyMember(user_id, family_member_id);
+
+        logger.info(`Đã xóa người thân ${family_member_id} cho chủ sở hữu ${user_id}.`);
+
+        res.status(200).json(
+            createResponse('success', 'Đã xóa người thân vào danh sách.', 200, [])
+        );
+    } catch (error) {
+        logger.error(`Lỗi khi xóa người thân: ${error.message}`, { meta: { user_id, family_member_id, error } });
+
+        res.status(400).json(
+            createResponse('fail', error.message, 400)
+        );
+    }
+}

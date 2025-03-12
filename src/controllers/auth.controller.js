@@ -105,7 +105,7 @@ exports.loginUser = async (req, res) => {
 
         const responseData = [
             { key: 'token', value: token },
-            { key: 'user', value: { id: user.id, username: user.username, email: user.email } }
+            { key: 'user', value: { id: user.id, username: user.username, email: user.email, is_admin: user.is_admin } }
         ];
 
         logger.info('Đăng nhập thành công.', { meta: { userId: user.id, email: user.email } });
