@@ -1,8 +1,16 @@
 const pool = require('../configs/db.config');
 
 // Hàm thêm người thân vào danh sách
-const addFamilyMember = async (ownerId, familyMemberId) => {
+const addFamilyMember = async (ownerId, email) => {
     try {
+        const query = `SELECT * FROM users WHERE email = $1`;
+        const result = await pool.query(query, [email]);
+        if (result.rows.length === 0) {
+            throw new Error('Người dùng không tồn tại.');
+        }
+
+        const familyMemberId = result.rows[0].id;
+
         // Kiểm tra xem familyMemberId có tồn tại trong bảng users không
         const userCheck = await pool.query('SELECT id, phone_number, token_fcm FROM users WHERE id = $1', [familyMemberId]);
 

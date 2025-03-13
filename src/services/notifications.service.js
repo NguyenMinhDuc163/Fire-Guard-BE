@@ -4,17 +4,29 @@ const { getSavedAccessToken } = require('../configs/token.service');
 const NotificationModel = require('../models/notification.model');
 
 // Hàm gửi thông báo tới danh sách người thân của chủ sở hữu
-const sendNotificationToFamilyMembers = async (ownerId, title, body) => {
+const sendNotificationToFamilyMembers = async (familyMemberId, title, body) => {
     try {
         // Lấy danh sách người thân từ bảng family_notifications
+
+        const query = 'SELECT user_id FROM family_notifications WHERE family_member_id = $1';
+        const ownerResult = await pool.query(query, [familyMemberId]);
+
+        if (ownerResult.rows.length === 0) {
+            throw new Error('Không tìm thấy chủ sở hữu cho thành viên này');
+        }
+
+        const ownerId = ownerResult.rows[0].user_id; // Lấy user_id của chủ sở hữu
+
+// Truy vấn lấy thông tin các thành viên gia đình
         const result = await pool.query(
             `SELECT fn.family_member_id, u.token_fcm 
-             FROM family_notifications fn
-             JOIN users u ON fn.family_member_id = u.id
-             WHERE fn.user_id = $1 AND u.token_fcm IS NOT NULL`,
-            [ownerId]
+     FROM family_notifications fn
+     JOIN users u ON fn.family_member_id = u.id
+     WHERE fn.user_id = $1 AND u.token_fcm IS NOT NULL AND fn.family_member_id != $2`, // lay all tru use call
+            [ownerId, familyMemberId] // Truyền ownerId thay vì ownerResult
         );
-        const familyMembers = result.rows;
+
+        const familyMembers = result.rows; // Lấy danh sách thành viên gia đình
 
         if (familyMembers.length === 0) {
             throw new Error('Không tìm thấy người thân nào có token FCM hợp lệ.');

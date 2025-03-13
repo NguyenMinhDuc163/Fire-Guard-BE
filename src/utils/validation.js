@@ -134,10 +134,11 @@ exports.validateChangePasswordData = (data) => {
 };
 
 
-exports.validateFamilyNotificationData = (data) => {
+exports.validateFamilyModifyData = (data) => {
     const schema = Joi.object({
         user_id: Joi.number().integer().required(),
-        family_member_id: Joi.number().integer().required()
+        email: Joi.string(),
+        family_member_id: Joi.number().integer()
     });
 
     return schema.validate(data);

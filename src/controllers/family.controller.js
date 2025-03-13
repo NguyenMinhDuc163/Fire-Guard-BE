@@ -1,14 +1,14 @@
 const { addFamilyMember, getFamilyMembers, removeFamilyMember} = require('../services/family.service');
 const { createResponse } = require('../utils/responseHelper');
 const { logger } = require('../utils/logger');
-const { validateFamilyNotificationData } = require('../utils/validation');
+const { validateFamilyModifyData } = require('../utils/validation');
 
 // Controller: Thêm người thân
 exports.addFamilyMember = async (req, res) => {
-    const { user_id, family_member_id } = req.body;
+    const { user_id, email } = req.body;
 
     // Validate dữ liệu đầu vào
-    const { error } = validateFamilyNotificationData(req.body);
+    const { error } = validateFamilyModifyData(req.body);
     if (error) {
         return res.status(400).json(
             createResponse('fail', error.details[0].message, 400)
@@ -16,18 +16,18 @@ exports.addFamilyMember = async (req, res) => {
     }
 
     try {
-        logger.info('Bắt đầu thêm người thân.', { meta: { user_id, family_member_id } });
+        logger.info('Bắt đầu thêm người thân.', { meta: { user_id, email } });
 
         // Gọi service để thêm người thân và lấy danh sách người thân
-        const familyMembers = await addFamilyMember(user_id, family_member_id);
+        const familyMembers = await addFamilyMember(user_id, email);
 
-        logger.info(`Đã thêm người thân ${family_member_id} cho chủ sở hữu ${user_id}.`);
+        logger.info(`Đã thêm người thân ${email} cho chủ sở hữu ${user_id}.`);
 
         res.status(201).json(
-            createResponse('success', 'Đã thêm người thân vào danh sách.', 201, familyMembers)
+            createResponse('success', 'Đã thêm thành công người thân vào danh sách nhận thông báo', 201, [])
         );
     } catch (error) {
-        logger.error(`Lỗi khi thêm người thân: ${error.message}`, { meta: { user_id, family_member_id, error } });
+        logger.error(`Lỗi khi thêm người thân: ${error.message}`, { meta: { user_id, email, error } });
 
         res.status(400).json(
             createResponse('fail', error.message, 400)
@@ -60,7 +60,7 @@ exports.removeFamilyMember = async (req, res) => {
     const { user_id, family_member_id } = req.body;
 
     // Validate dữ liệu đầu vào
-    const { error } = validateFamilyNotificationData(req.body);
+    const { error } = validateFamilyModifyData(req.body);
     if (error) {
         return res.status(400).json(
             createResponse('fail', error.details[0].message, 400)

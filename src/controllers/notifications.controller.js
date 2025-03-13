@@ -3,13 +3,13 @@ const { createResponse } = require('../utils/responseHelper');
 const { logger } = require('../utils/logger');
 
 exports.sendNotification = async (req, res) => {
-    const { user_id, title, body } = req.body;
+    const { familyMemberId, title, body } = req.body;
 
     try {
-        logger.info('Bắt đầu gửi thông báo.', { meta: { user_id, title, body } });
+        logger.info('Bắt đầu gửi thông báo.', { meta: { familyMemberId, title, body } });
 
         // Gửi thông báo tới danh sách người thân
-        const result = await sendNotificationToFamilyMembers(user_id, title, body);
+        const result = await sendNotificationToFamilyMembers(familyMemberId, title, body);
 
         // Chỉ phản hồi kết quả thành công hoặc lỗi đơn giản
         const successful = result.filter(r => r.status === 'fulfilled').length;
@@ -25,7 +25,7 @@ exports.sendNotification = async (req, res) => {
             )
         );
     } catch (error) {
-        logger.error(`Lỗi khi gửi thông báo: ${error.message}`, { meta: { user_id, title, body, error } });
+        logger.error(`Lỗi khi gửi thông báo: ${error.message}`, { meta: { familyMemberId, title, body, error } });
         res.status(500).json(
             createResponse('fail', 'Không thể gửi thông báo.', 500, [], error.message)
         );
