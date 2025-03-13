@@ -48,6 +48,7 @@ exports.getFamilyMembers = async (req, res) => {
             createResponse('success', 'Danh sách người thân.', 200, familyMembers)
         );
     } catch (error) {
+        console.log(error)
         logger.error(`Lỗi khi lấy danh sách người thân: ${error.message}`, { meta: { user_id, error } });
 
         res.status(500).json(

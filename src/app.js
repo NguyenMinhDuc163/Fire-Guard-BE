@@ -64,7 +64,6 @@ app.use(historyRouter);
 app.use(iotStatusRouter);
 app.use(iotStatusSaveRouter);
 app.use(guidesAndNewsRouter);
-app.use(guidesAndNewsAddRouter);
 app.use(userLocationRouter);
 app.use(familyRouter);
 
