@@ -69,7 +69,7 @@ exports.validateMultipleIotStatusData = (data) => {
 
 exports.validateGuidesAndNewsQuery = (data) => {
     const schema = Joi.object({
-        category: Joi.string().valid('guide', 'news').required(),
+        category: Joi.string().valid('guide', 'fire_safety', 'escape_skills').required(),
         limit: Joi.number().integer().min(1).optional()
     });
     return schema.validate(data);
@@ -80,10 +80,10 @@ exports.validateMultipleGuidesAndNewsData = (data) => {
     const schema = Joi.array().items(
         Joi.object({
             title: Joi.string().required(),
-            type: Joi.string().valid('video', 'article').required(),
+            type: Joi.string().required(),
             url: Joi.string().uri().allow(null).optional(),
             content: Joi.string().allow(null).optional(),
-            category: Joi.string().valid('guide', 'news').required(),
+            category: Joi.string().valid('guide', 'fire_safety', 'escape_skills').required(),
         })
     );
     return schema.validate(data);

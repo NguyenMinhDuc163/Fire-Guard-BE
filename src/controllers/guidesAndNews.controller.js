@@ -2,7 +2,7 @@ const { getGuidesAndNews } = require('../services/guidesAndNews.service');
 const { validateGuidesAndNewsQuery, validateMultipleGuidesAndNewsData} = require('../utils/validation');
 const { createResponse } = require('../utils/responseHelper');
 const { logger } = require('../utils/logger');
-const {addMultipleGuidesAndNews} = require("../services/guidesAndNewsAdd.service");
+const {addMultipleGuidesAndNews} = require('../services/guidesAndNews.service');
 
 exports.getGuidesAndNews = async (req, res) => {
     const { category, limit } = req.query;
