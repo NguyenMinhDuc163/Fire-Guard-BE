@@ -19,7 +19,7 @@ exports.getHistory = async (req, res) => {
             res.status(200).json(createResponse('success', 'Lịch sử đã được truy xuất thành công.', 200, history));
         } else {
             logger.warn('Không tìm thấy lịch sử.', { meta: { user_id, start_date, end_date } });
-            res.status(404).json(createResponse('fail', 'Không tìm thấy lịch sử.', 404, []));
+            res.status(200).json(createResponse('fail', 'Không tìm thấy lịch sử.', 200, []));
         }
     } catch (err) {
         logger.error(`Lỗi khi truy xuất lịch sử: ${err.message}`, { meta: { request: req.query, error: err } });
