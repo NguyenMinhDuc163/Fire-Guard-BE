@@ -26,7 +26,7 @@ exports.sendNotification = async (req, res) => {
         );
     } catch (error) {
         logger.error(`Lỗi khi gửi thông báo: ${error.message}`, { meta: { familyMemberId, title, body, error } });
-        res.status(500).json(
+        res.status(200).json(
             createResponse('fail', 'Không thể gửi thông báo.', 500, [], error.message)
         );
     }

@@ -10,7 +10,7 @@ exports.notifyFamilyMember = async (req, res) => {
     const { error } = validateFamilyNotificationData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`);
-        return res.status(400).json(
+        return res.status(200).json(
             createResponse('fail', error.details[0].message, 400, [], error.details[0].message)
         );
     }
@@ -25,7 +25,7 @@ exports.notifyFamilyMember = async (req, res) => {
     // Kiểm tra nếu chưa đủ 5 phút (300000ms) từ lần gọi cuối
     if (now - lastCall < 300000) {
         logger.warn('Gửi thông báo quá nhanh, vui lòng đợi 5 phút.');
-        return res.status(429).json(
+        return res.status(200).json(
             createResponse('fail', 'Vui lòng đợi 5 phút trước khi gửi thông báo tiếp theo.', 429, [])
         );
     }
@@ -63,7 +63,7 @@ exports.notifyFamilyMember = async (req, res) => {
         });
 
         logger.error(`Lỗi khi gửi thông báo: ${err.message}`);
-        return res.status(500).json(
+        return res.status(200).json(
             createResponse('fail', 'Lỗi khi gửi thông báo.', 500, [], err.message)
         );
     }

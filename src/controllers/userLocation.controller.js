@@ -7,7 +7,7 @@ exports.handleUserLocation = async (req, res) => {
     const { error } = validateUserLocationData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+        return res.status(200).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
     }
 
     const { userID, longitude, latitude, type, is_fire } = req.body;
@@ -28,11 +28,11 @@ exports.handleUserLocation = async (req, res) => {
             logger.info('Data has been added successfully.', { meta: { request: req.body } });
             res.status(200).json(createResponse('success', 'Data has been added successfully.', 200, []));
         } else {
-            res.status(400).json(createResponse('fail', 'Invalid request parameters', 400, []));
+            res.status(200).json(createResponse('fail', 'Invalid request parameters', 400, []));
         }
     } catch (err) {
         logger.error(`System Error: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(createResponse('fail', 'System Error.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'System Error.', 500, [], err.message));
     }
 };
 

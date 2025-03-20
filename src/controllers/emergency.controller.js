@@ -10,12 +10,12 @@ exports.callFireDepartment = async (req, res) => {
     const { error } = validateEmergencyData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(
+        return res.status(200).json(
             createResponse('fail', error.details[0].message, 400, [], error.details[0].message)
         );
     }
 
-    const { location, phone_number } = req.body; // Lấy phone_number từ request nếu có
+    const { location, phone_number, family_member_id } = req.body; // Lấy phone_number từ request nếu có
     const now = Date.now(); // Lấy timestamp hiện tại
     const lastCall = lastFireDepartmentCall[location] || 0; // Kiểm tra lần gọi cuối cho địa điểm này
 
@@ -24,23 +24,23 @@ exports.callFireDepartment = async (req, res) => {
     // Kiểm tra nếu chưa đủ 5 phút (300000ms)
     if (now - lastCall < 30000) {
         logger.warn(`Yêu cầu gửi thông báo cứu hỏa quá sớm. Vui lòng đợi thêm thời gian.`, { meta: { location, timeDifference: now - lastCall } });
-        return res.status(429).json(
+        return res.status(200).json(
             createResponse('fail', 'Vui lòng đợi 5 phút trước khi gửi thông báo cứu hỏa tiếp theo.', 429, [])
         );
     }
 
     try {
         // Gọi lực lượng cứu hỏa với số điện thoại truyền vào hoặc lấy từ .env
-        const response = await callFireDepartment(req.body, phone_number || process.env.FIRE_DEPARTMENT_PHONE);
+        const response = await callFireDepartment(req.body, phone_number || process.env.FIRE_DEPARTMENT_PHONE, family_member_id);
 
         // Lưu log thành công vào cơ sở dữ liệu
-        await EmergencyModel.save({
-            location: req.body.location,
-            phone_number: phone_number || process.env.FIRE_DEPARTMENT_PHONE,
-            incident_details: req.body.incident_details,
-            status: 'success',
-            response_message: 'Lực lượng cứu hỏa đã được thông báo thành công.'
-        });
+        // await EmergencyModel.save({
+        //     location: req.body.location,
+        //     phone_number: phone_number || process.env.FIRE_DEPARTMENT_PHONE,
+        //     incident_details: req.body.incident_details,
+        //     status: 'success',
+        //     response_message: 'Lực lượng cứu hỏa đã được thông báo thành công.'
+        // });
 
         // Cập nhật timestamp cho địa điểm này
         lastFireDepartmentCall[location] = now;
@@ -61,7 +61,7 @@ exports.callFireDepartment = async (req, res) => {
         });
 
         logger.error(`Lỗi khi thông báo lực lượng cứu hỏa: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(
+        res.status(200).json(
             createResponse('fail', 'Lỗi hệ thống.', 500, [], err.message)
         );
     }

@@ -13,7 +13,7 @@ const authenticateJWT = (req, res, next) => {
 
     if (!token) {
         logger.warn(`Token không được cung cấp. Path: ${req.path}`, { meta: { headers: req.headers } });
-        return res.status(401).json(createResponse('fail', 'Token không được cung cấp.', 401, [], err.message));
+        return res.status(200).json(createResponse('fail', 'Token không được cung cấp.', 401, [], err.message));
 
     }
 
@@ -23,7 +23,7 @@ const authenticateJWT = (req, res, next) => {
         next();
     } catch (err) {
         logger.error(`Token không hợp lệ hoặc đã hết hạn. Path: ${req.path}`, { meta: { error: err } });
-        return res.status(403).json(createResponse('fail', 'Token không hợp lệ hoặc đã hết hạn.', 403, [], err.message));
+        return res.status(200).json(createResponse('fail', 'Token không hợp lệ hoặc đã hết hạn.', 403, [], err.message));
 
 
     }

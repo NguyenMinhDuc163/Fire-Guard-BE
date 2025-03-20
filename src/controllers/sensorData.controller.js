@@ -18,7 +18,7 @@ exports.receiveSensorData = async (req, res) => {
     const { error } = validateSensorData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400)  .json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+        return res.status(200)  .json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
     }
 
     try {
@@ -87,6 +87,6 @@ exports.receiveSensorData = async (req, res) => {
     } catch (err) {
         logger.error(`Lỗi khi xử lý dữ liệu cảm biến: ${err.message}`, { meta: { request: req.body, error: err } });
         console.log(err);
-        res.status(500).json(createResponse('fail', 'Lỗi khi xử lý dữ liệu.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi khi xử lý dữ liệu.', 500, [], err.message));
     }
 };

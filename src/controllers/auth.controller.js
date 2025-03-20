@@ -10,7 +10,7 @@ exports.registerUser = async (req, res) => {
     const { error } = validateRegisterData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(
+        return res.status(200).json(
             createResponse('fail', error.details[0].message, 400, [])
         );
     }
@@ -20,7 +20,7 @@ exports.registerUser = async (req, res) => {
         const existingUser = await UserModel.findByEmail(req.body.email);
 
         if (existingUser) {
-            return res.status(400).json(
+            return res.status(200).json(
                 createResponse('fail', 'Email đã được sử dụng.', 400, [])
             );
         }
@@ -38,7 +38,7 @@ exports.registerUser = async (req, res) => {
         );
     } catch (err) {
         logger.error(`Lỗi khi đăng ký người dùng: ${err.message}`, { meta: { request: req.body, error: err } });
-        return res.status(500).json(
+        return res.status(200).json(
             createResponse('fail', 'Lỗi khi đăng ký người dùng.', 500, [], err.message)
         );
     }
@@ -49,7 +49,7 @@ exports.updateUserInfo = async (req, res) => {
 
     // Kiểm tra xem ID có được truyền hay không
     if (!id) {
-        return res.status(400).json(createResponse('fail', 'ID người dùng là bắt buộc.', 400));
+        return res.status(200).json(createResponse('fail', 'ID người dùng là bắt buộc.', 400));
     }
 
     try {
@@ -57,7 +57,7 @@ exports.updateUserInfo = async (req, res) => {
         const existingUser = await UserModel.findById(id);
 
         if (!existingUser) {
-            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404));
+            return res.status(200).json(createResponse('fail', 'Người dùng không tồn tại.', 404));
         }
 
         // Cập nhật thông tin người dùng
@@ -71,7 +71,7 @@ exports.updateUserInfo = async (req, res) => {
         return res.status(200).json(createResponse('success', 'Thông tin người dùng đã được cập nhật thành công.', 200, [updatedUser]));
     } catch (err) {
         logger.error(`Lỗi khi cập nhật thông tin người dùng: ${err.message}`, { meta: { request: req.body, error: err } });
-        return res.status(500).json(createResponse('fail', 'Lỗi khi cập nhật thông tin người dùng.', 500, [], err.message));
+        return res.status(200).json(createResponse('fail', 'Lỗi khi cập nhật thông tin người dùng.', 500, [], err.message));
     }
 };
 
@@ -80,20 +80,20 @@ exports.loginUser = async (req, res) => {
     const { error } = validateLoginData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [])); // Sửa data thành []
+        return res.status(200).json(createResponse('fail', error.details[0].message, 400, [])); // Sửa data thành []
     }
 
     try {
         const user = await UserModel.findByEmail(req.body.email);
         if (!user) {
             logger.warn('Người dùng không tồn tại.', { meta: { email: req.body.email } });
-            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404, [])); // Sửa data thành []
+            return res.status(200).json(createResponse('fail', 'Người dùng không tồn tại.', 404, [])); // Sửa data thành []
         }
 
         const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
         if (!isPasswordValid) {
             logger.warn('Mật khẩu không chính xác.', { meta: { email: req.body.email } });
-            return res.status(401).json(createResponse('fail', 'Mật khẩu không chính xác.', 401, [])); // Sửa data thành []
+            return res.status(200).json(createResponse('fail', 'Mật khẩu không chính xác.', 401, [])); // Sửa data thành []
         }
 
         // Tạo JWT token
@@ -113,7 +113,7 @@ exports.loginUser = async (req, res) => {
         res.status(200).json(createResponse('success', 'Đăng nhập thành công.', 200, responseData));
     } catch (err) {
         logger.error(`Lỗi khi đăng nhập: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi khi đăng nhập.', 500, [], err.message)); // Sửa data thành []
+        res.status(200).json(createResponse('fail', 'Lỗi khi đăng nhập.', 500, [], err.message)); // Sửa data thành []
     }
 };
 
@@ -124,7 +124,7 @@ exports.changePassword = async (req, res) => {
     // Validate input
     if (!id || !oldPassword || !newPassword) {
         logger.error('Validation Error: Missing required fields.', { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', 'Thiếu thông tin cần thiết.', 400, []));
+        return res.status(200).json(createResponse('fail', 'Thiếu thông tin cần thiết.', 400, []));
     }
 
     try {
@@ -132,14 +132,14 @@ exports.changePassword = async (req, res) => {
         const user = await UserModel.findById(id);
         if (!user) {
             logger.warn('Người dùng không tồn tại.', { meta: { id } });
-            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404, []));
+            return res.status(200).json(createResponse('fail', 'Người dùng không tồn tại.', 404, []));
         }
 
         // Xác thực mật khẩu cũ
         const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
         if (!isPasswordValid) {
             logger.warn('Mật khẩu cũ không chính xác.', { meta: { id } });
-            return res.status(401).json(createResponse('fail', 'Mật khẩu cũ không chính xác.', 401, []));
+            return res.status(200).json(createResponse('fail', 'Mật khẩu cũ không chính xác.', 401, []));
         }
 
         // Mã hóa mật khẩu mới
@@ -152,7 +152,7 @@ exports.changePassword = async (req, res) => {
         res.status(200).json(createResponse('success', 'Đổi mật khẩu thành công.', 200, []));
     } catch (err) {
         logger.error(`Lỗi khi đổi mật khẩu: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi khi đổi mật khẩu.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi khi đổi mật khẩu.', 500, [], err.message));
     }
 };
 
@@ -164,7 +164,7 @@ exports.requestForgotPassword = async (req, res) => {
         const user = await UserModel.findByEmail(email);
         if (!user) {
             logger.warn(`Email không tồn tại: ${email}`);
-            return res.status(404).json(createResponse('fail', 'Email không tồn tại.', 404));
+            return res.status(200).json(createResponse('fail', 'Email không tồn tại.', 404));
         }
 
         // Tạo token reset mật khẩu (hết hạn sau 15 phút)
@@ -179,7 +179,7 @@ exports.requestForgotPassword = async (req, res) => {
         res.status(200).json(createResponse('success', 'Email reset mật khẩu đã được gửi.', 200, []));
     } catch (err) {
         logger.error(`Lỗi khi yêu cầu reset mật khẩu: ${err.message}`);
-        res.status(500).json(createResponse('fail', 'Lỗi server.', 500));
+        res.status(200).json(createResponse('fail', 'Lỗi server.', 500));
     }
 };
 
@@ -194,7 +194,7 @@ exports.resetPassword = async (req, res) => {
     // Validate dữ liệu đầu vào
     if (!token || !newPassword) {
         logger.error('Validation Error: Missing required fields.', { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', 'Thiếu thông tin cần thiết.', 400));
+        return res.status(200).json(createResponse('fail', 'Thiếu thông tin cần thiết.', 400));
     }
 
     try {
@@ -206,7 +206,7 @@ exports.resetPassword = async (req, res) => {
         const user = await UserModel.findById(decoded.userId);
         if (!user) {
             logger.warn('Người dùng không tồn tại.', { meta: { userId: decoded.userId } });
-            return res.status(404).json(createResponse('fail', 'Người dùng không tồn tại.', 404));
+            return res.status(200).json(createResponse('fail', 'Người dùng không tồn tại.', 404));
         }
 
         // Mã hóa mật khẩu mới
@@ -220,14 +220,14 @@ exports.resetPassword = async (req, res) => {
     } catch (err) {
         if (err.name === 'JsonWebTokenError') {
             logger.error('Token không hợp lệ.', { meta: { error: err.message } });
-            return res.status(401).json(createResponse('fail', 'Token không hợp lệ.', 401));
+            return res.status(200).json(createResponse('fail', 'Token không hợp lệ.', 401));
         }
         if (err.name === 'TokenExpiredError') {
             logger.error('Token đã hết hạn.', { meta: { error: err.message } });
-            return res.status(401).json(createResponse('fail', 'Token đã hết hạn.', 401));
+            return res.status(200).json(createResponse('fail', 'Token đã hết hạn.', 401));
         }
         logger.error(`Lỗi khi đặt lại mật khẩu: ${err.message}`, { meta: { request: req.body } });
-        res.status(500).json(createResponse('fail', 'Lỗi server.', 500, null, err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi server.', 500, null, err.message));
     }
 };
 

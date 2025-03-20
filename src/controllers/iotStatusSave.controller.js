@@ -24,7 +24,7 @@ exports.saveIotStatus = async (req, res) => {
     const { error } = validateMultipleIotStatusData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+        return res.status(200).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
     }
 
     try {
@@ -48,6 +48,6 @@ exports.saveIotStatus = async (req, res) => {
         res.status(200).json(createResponse('success', 'Trạng thái của các thiết bị đã được lưu thành công.', 200, updatedDevices));
     } catch (err) {
         logger.error(`Lỗi hệ thống khi lưu trạng thái thiết bị: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi hệ thống khi lưu trạng thái thiết bị.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi hệ thống khi lưu trạng thái thiết bị.', 500, [], err.message));
     }
 };

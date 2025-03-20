@@ -25,6 +25,7 @@ exports.validateNotificationData = (data) => {
 
 exports.validateEmergencyData = (data) => {
     const schema = Joi.object({
+        family_member_id: Joi.number().required(),
         location: Joi.string().required(),
         incident_details: Joi.string().required(),
         timestamp: Joi.date().iso().required(),
@@ -97,7 +98,8 @@ exports.validateRegisterData = (data) => {
         token_fcm: Joi.string().allow(null, '').optional(),
         phone_number: Joi.string().allow(null, '').optional(),
         click_send_name: Joi.string().allow(null, '').optional(),
-        click_send_key: Joi.string().allow(null, '').optional()
+        click_send_key: Joi.string().allow(null, '').optional(),
+        alert_phone: Joi.string().allow(null, '').optional()
     });
     return schema.validate(data);
 };

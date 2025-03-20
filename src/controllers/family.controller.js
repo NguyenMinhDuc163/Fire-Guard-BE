@@ -10,7 +10,7 @@ exports.addFamilyMember = async (req, res) => {
     // Validate dữ liệu đầu vào
     const { error } = validateFamilyModifyData(req.body);
     if (error) {
-        return res.status(400).json(
+        return res.status(200).json(
             createResponse('fail', error.details[0].message, 400)
         );
     }
@@ -29,7 +29,7 @@ exports.addFamilyMember = async (req, res) => {
     } catch (error) {
         logger.error(`Lỗi khi thêm người thân: ${error.message}`, { meta: { user_id, email, error } });
 
-        res.status(400).json(
+        res.status(200).json(
             createResponse('fail', error.message, 400)
         );
     }
@@ -51,7 +51,7 @@ exports.getFamilyMembers = async (req, res) => {
         console.log(error)
         logger.error(`Lỗi khi lấy danh sách người thân: ${error.message}`, { meta: { user_id, error } });
 
-        res.status(500).json(
+        res.status(200).json(
             createResponse('fail', 'Không thể lấy danh sách người thân.', 500)
         );
     }
@@ -63,7 +63,7 @@ exports.removeFamilyMember = async (req, res) => {
     // Validate dữ liệu đầu vào
     const { error } = validateFamilyModifyData(req.body);
     if (error) {
-        return res.status(400).json(
+        return res.status(200).json(
             createResponse('fail', error.details[0].message, 400)
         );
     }
@@ -83,7 +83,7 @@ exports.removeFamilyMember = async (req, res) => {
     } catch (error) {
         logger.error(`Lỗi khi xóa người thân: ${error.message}`, { meta: { user_id, family_member_id, error } });
 
-        res.status(400).json(
+        res.status(200).json(
             createResponse('fail', error.message, 400)
         );
     }

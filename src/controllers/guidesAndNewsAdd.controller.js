@@ -7,7 +7,7 @@
 //     const { error } = validateMultipleGuidesAndNewsData(req.body);
 //     if (error) {
 //         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-//         return res.status(400).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+//         return res.status(200).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
 //     }
 //
 //     try {
@@ -18,6 +18,6 @@
 //         res.status(200).json(createResponse('success', 'Dữ liệu đã được thêm thành công.', 200, []));
 //     } catch (err) {
 //         logger.error(`Lỗi hệ thống khi thêm dữ liệu: ${err.message}`, { meta: { request: req.body, error: err } });
-//         res.status(500).json(createResponse('fail', 'Lỗi hệ thống khi thêm dữ liệu.', 500, [], err.message));
+//         res.status(200).json(createResponse('fail', 'Lỗi hệ thống khi thêm dữ liệu.', 500, [], err.message));
 //     }
 // };

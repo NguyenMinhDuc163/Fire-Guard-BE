@@ -11,6 +11,6 @@ exports.checkIotStatus = async (req, res) => {
         res.status(200).json(createResponse('success', 'Trạng thái IoT đã được truy xuất thành công.', 200, iotStatus));
     } catch (err) {
         logger.error(`Lỗi hệ thống khi truy xuất trạng thái IoT: ${err.message}`, { meta: { error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi hệ thống.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi hệ thống.', 500, [], err.message));
     }
 };

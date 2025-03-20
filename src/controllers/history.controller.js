@@ -9,7 +9,7 @@ exports.getHistory = async (req, res) => {
     const { error } = validateHistoryRequest(req.query);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.query } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+        return res.status(200).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
     }
 
     try {
@@ -23,6 +23,6 @@ exports.getHistory = async (req, res) => {
         }
     } catch (err) {
         logger.error(`Lỗi khi truy xuất lịch sử: ${err.message}`, { meta: { request: req.query, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi khi truy xuất lịch sử.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi khi truy xuất lịch sử.', 500, [], err.message));
     }
 };

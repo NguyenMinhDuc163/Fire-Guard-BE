@@ -10,7 +10,7 @@ exports.getGuidesAndNews = async (req, res) => {
     const { error } = validateGuidesAndNewsQuery(req.query);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.query } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+        return res.status(200).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
     }
 
     try {
@@ -20,11 +20,11 @@ exports.getGuidesAndNews = async (req, res) => {
             res.status(200).json(createResponse('success', 'Dữ liệu đã được truy xuất thành công.', 200, data));
         } else {
             logger.warn('Không có dữ liệu phù hợp.', { meta: { category, limit } });
-            res.status(404).json(createResponse('fail', 'Không có dữ liệu phù hợp.', 404, []));
+            res.status(200).json(createResponse('fail', 'Không có dữ liệu phù hợp.', 404, []));
         }
     } catch (err) {
         logger.error(`Lỗi khi truy xuất dữ liệu: ${err.message}`, { meta: { request: req.query, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi khi truy xuất dữ liệu.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi khi truy xuất dữ liệu.', 500, [], err.message));
     }
 };
 
@@ -32,7 +32,7 @@ exports.addGuidesAndNews = async (req, res) => {
     const { error } = validateMultipleGuidesAndNewsData(req.body);
     if (error) {
         logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
-        return res.status(400).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
+        return res.status(200).json(createResponse('fail', error.details[0].message, 400, [], error.details[0].message));
     }
 
     try {
@@ -43,6 +43,6 @@ exports.addGuidesAndNews = async (req, res) => {
         res.status(200).json(createResponse('success', 'Dữ liệu đã được thêm thành công.', 200, []));
     } catch (err) {
         logger.error(`Lỗi hệ thống khi thêm dữ liệu: ${err.message}`, { meta: { request: req.body, error: err } });
-        res.status(500).json(createResponse('fail', 'Lỗi hệ thống khi thêm dữ liệu.', 500, [], err.message));
+        res.status(200).json(createResponse('fail', 'Lỗi hệ thống khi thêm dữ liệu.', 500, [], err.message));
     }
 };
