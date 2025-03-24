@@ -107,7 +107,8 @@ exports.validateRegisterData = (data) => {
 exports.validateLoginData = (data) => {
     const schema = Joi.object({
         email: Joi.string().email().required(),
-        password: Joi.string().required()
+        password: Joi.string().required(),
+        token_fcm: Joi.string().required(),
     });
     return schema.validate(data);
 };

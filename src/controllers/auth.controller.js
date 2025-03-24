@@ -102,7 +102,8 @@ exports.loginUser = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-
+        // Cập nhật token FCM
+        await UserModel.updateTokenFCM(user.id, req.body.token_fcm);
         const responseData = [
             { key: 'token', value: token },
             { key: 'user', value: { id: user.id, username: user.username, email: user.email, is_admin: user.is_admin } }

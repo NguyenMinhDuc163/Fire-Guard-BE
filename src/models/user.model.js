@@ -68,7 +68,15 @@ class UserModel {
         await pool.query(query, values);
     }
 
-
+    static async updateTokenFCM(userId, tokenFcm) {
+        const query = `
+        UPDATE users
+        SET token_fcm = $1
+        WHERE id = $2
+    `;
+        const values = [tokenFcm, userId];
+        await pool.query(query, values);
+    }
     // Tìm người dùng theo id
     static async findById(id) {
         const query = `SELECT * FROM users WHERE id = $1`;

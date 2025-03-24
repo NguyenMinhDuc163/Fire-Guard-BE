@@ -8,7 +8,7 @@ const sendNotificationToFamilyMembers = async (familyMemberId, title, body) => {
     try {
         // Lấy danh sách người thân từ bảng family_notifications
 
-        const query = 'SELECT user_id FROM family_notifications WHERE family_member_id = $1';
+        const query = 'SELECT user_id FROM family_notifications WHERE family_member_id = $1 OR user_id = $1';
         const ownerResult = await pool.query(query, [familyMemberId]);
 
         if (ownerResult.rows.length === 0) {
@@ -25,7 +25,7 @@ const sendNotificationToFamilyMembers = async (familyMemberId, title, body) => {
      WHERE fn.user_id = $1 AND u.token_fcm IS NOT NULL AND fn.family_member_id != $2`, // lay all tru use call
             [ownerId, familyMemberId] // Truyền ownerId thay vì ownerResult
         );
-
+        console.log(`======> ${ownerId } ${familyMemberId}`);
         const familyMembers = result.rows; // Lấy danh sách thành viên gia đình
 
         if (familyMembers.length === 0) {
