@@ -17,6 +17,8 @@ services:
       - NODE_ENV=production
     depends_on:
       - database # Đảm bảo database khởi động trước ứng dụng
+    volumes:
+      - ./public/uploads:/app/public/uploads
 
   database:
     container_name: fire_guard_db # Tên container database

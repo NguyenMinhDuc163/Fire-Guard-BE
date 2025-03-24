@@ -24,6 +24,8 @@ const { authenticateJWT } = require('./middleware/authMiddleware'); // Middlewar
 // Middleware để parse JSON và ghi log
 app.use(express.json());
 app.use(logMiddleware);
+app.use(express.static('public'));
+
 
 // Cấu hình CORS
 app.use(cors({

@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { logger } = require('../utils/logger');
 const { sendResetEmail } = require('../services/email.service');
+const path = require('path');
+const fs = require('fs');
+
 // Đăng ký người dùng
 exports.registerUser = async (req, res) => {
     const { error } = validateRegisterData(req.body);
@@ -95,7 +98,7 @@ exports.loginUser = async (req, res) => {
             logger.warn('Mật khẩu không chính xác.', { meta: { email: req.body.email } });
             return res.status(200).json(createResponse('fail', 'Mật khẩu không chính xác.', 401, [])); // Sửa data thành []
         }
-
+        console.log(`====> ${user.id}`)
         // Tạo JWT token
         const token = jwt.sign(
             { userId: user.id },
@@ -232,3 +235,108 @@ exports.resetPassword = async (req, res) => {
     }
 };
 
+
+// Upload avatar
+// Upload avatar
+exports.uploadAvatar = async (req, res) => {
+    try {
+        if (!req.file) {
+            logger.error('Không tìm thấy file upload.');
+            return res.status(200).json(
+                createResponse('fail', 'Không tìm thấy file ảnh.', 400, [])
+            );
+        }
+
+        const userId = req.user.userId;
+
+        // Xóa avatar cũ nếu có và không phải avatar mặc định
+        const oldAvatarPath = await UserModel.removeOldAvatar(userId);
+        if (oldAvatarPath && !oldAvatarPath.includes('default-avatar.png')) {
+            const fullPath = path.join(process.cwd(), 'public', oldAvatarPath);
+            if (fs.existsSync(fullPath)) {
+                fs.unlinkSync(fullPath);
+                logger.info(`Đã xóa avatar cũ: ${oldAvatarPath}`);
+            }
+        }
+
+        // Đường dẫn mới cho avatar
+        const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+
+        // Cập nhật đường dẫn trong database
+        const updatedUser = await UserModel.updateAvatar(userId, avatarUrl);
+
+        logger.info('Avatar đã được cập nhật thành công.', { meta: { userId, avatarUrl } });
+
+        return res.status(200).json(
+            createResponse('success', 'Avatar đã được cập nhật thành công.', 200, [updatedUser])
+        );
+    } catch (err) {
+        // Xóa file đã upload nếu có lỗi xảy ra
+        if (req.file && req.file.path) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch (unlinkErr) {
+                logger.error(`Lỗi khi xóa file tạm: ${unlinkErr.message}`);
+            }
+        }
+
+        logger.error(`Lỗi khi cập nhật avatar: ${err.message}`, { meta: { error: err } });
+        return res.status(200).json(
+            createResponse('fail', 'Lỗi khi cập nhật avatar.', 500, [], err.message)
+        );
+    }
+};
+// Lấy ảnh đại diện của chính mình
+exports.getMyAvatar = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        // Ghi log để debug
+        logger.info(`Đang tìm user với ID: ${userId}`);
+
+        // Lấy thông tin avatar từ database
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            logger.warn(`Không tìm thấy người dùng với ID: ${userId}`);
+            // Trả về JSON thay vì text để phù hợp với response format
+            return res.status(200).json(
+                createResponse('fail', 'Người dùng không tồn tại.', 404, [])
+            );
+        }
+
+        // Trả về thông tin avatar
+        logger.info(`Đã tìm thấy user, avatar_url: ${user.avatar_url}`);
+
+        // Xác định đường dẫn file
+        let avatarPath = user.avatar_url;
+
+        if (!avatarPath || avatarPath === 'default-avatar.png') {
+            avatarPath = path.join(process.cwd(), 'public', 'default-avatar.png');
+        } else if (avatarPath.startsWith('http')) {
+            return res.redirect(avatarPath);
+        } else {
+            avatarPath = path.join(process.cwd(), 'public', avatarPath);
+        }
+
+        // Kiểm tra xem file có tồn tại không
+        if (!fs.existsSync(avatarPath)) {
+            logger.warn(`File avatar không tồn tại: ${avatarPath}`);
+            avatarPath = path.join(process.cwd(), 'public', 'default-avatar.png');
+
+            if (!fs.existsSync(avatarPath)) {
+                return res.status(200).json(
+                    createResponse('fail', 'Không tìm thấy file ảnh đại diện.', 404, [])
+                );
+            }
+        }
+
+        // Trả về file ảnh
+        res.sendFile(avatarPath);
+    } catch (err) {
+        logger.error(`Lỗi khi lấy avatar: ${err.message}`, { meta: { error: err } });
+        return res.status(200).json(
+            createResponse('fail', 'Lỗi server khi lấy ảnh đại diện.', 500, [], err.message)
+        );
+    }
+};

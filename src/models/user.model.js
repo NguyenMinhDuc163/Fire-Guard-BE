@@ -78,11 +78,26 @@ class UserModel {
         await pool.query(query, values);
     }
     // Tìm người dùng theo id
+    // static async findById(id) {
+    //     const query = `SELECT * FROM users WHERE id = $1`;
+    //     const result = await pool.query(query, [id]);
+    //     return result.rows[0];
+    // }
+
+
     static async findById(id) {
-        const query = `SELECT * FROM users WHERE id = $1`;
-        const result = await pool.query(query, [id]);
-        return result.rows[0];
+        try {
+            console.log(`Finding user with ID: ${id}`); // Log để debug
+            const query = `SELECT * FROM users WHERE id = $1`;
+            const result = await pool.query(query, [id]);
+            console.log(`Query result: ${JSON.stringify(result.rows)}`); // Log kết quả truy vấn
+            return result.rows[0];
+        } catch (error) {
+            console.error(`Error in findById: ${error.message}`);
+            throw error;
+        }
     }
+
     // update user
     static async updateUser(userId, data) {
         const query = `
@@ -107,8 +122,36 @@ class UserModel {
         return result.rows[0];
     }
 
+// Thêm hoặc cập nhật avatar
+    static async updateAvatar(userId, avatarUrl) {
+        const query = `
+            UPDATE users
+            SET avatar_url = $1, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $2
+                RETURNING id, username, email, avatar_url;
+        `;
+        const values = [avatarUrl, userId];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
+
+// Xóa avatar cũ
+    static async removeOldAvatar(userId) {
+        try {
+            const query = 'SELECT avatar_url FROM users WHERE id = $1';
+            const result = await pool.query(query, [userId]);
+            return result.rows.length > 0 ? result.rows[0].avatar_url : null;
+        } catch (error) {
+            console.error('Lỗi khi truy vấn avatar cũ:', error);
+            return null;
+        }
+    }
+
+
 
 }
+
+
 
 
 
