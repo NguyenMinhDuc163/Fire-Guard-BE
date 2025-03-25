@@ -109,7 +109,7 @@ exports.loginUser = async (req, res) => {
         await UserModel.updateTokenFCM(user.id, req.body.token_fcm);
         const responseData = [
             { key: 'token', value: token },
-            { key: 'user', value: { id: user.id, username: user.username, email: user.email, is_admin: user.is_admin } }
+            { key: 'user', value: { id: user.id, username: user.username, email: user.email, is_admin: user.is_admin ,alert_phone : user.alert_phone ?? "114"} }
         ];
 
         logger.info('Đăng nhập thành công.', { meta: { userId: user.id, email: user.email } });

@@ -62,7 +62,7 @@ exports.callFireDepartment = async (req, res) => {
 
         logger.error(`Lỗi khi thông báo lực lượng cứu hỏa: ${err.message}`, { meta: { request: req.body, error: err } });
         res.status(200).json(
-            createResponse('fail', 'Lỗi hệ thống.', 500, [], err.message)
+            createResponse('fail', 'Lỗi hệ thống. 123', 500, [], err.message)
         );
     }
 };

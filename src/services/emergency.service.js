@@ -36,11 +36,15 @@ const callFireDepartment = async (data, phoneNumber, family_member_id) => {
     };
     console.log(`fasfsf1 ${clickSendName} ${clickSendKey}`);
     console.log(`gthgfd2 ${process.env.API_USERNAME} ${process.env.API_KEY}`);
+    console.log('DB Key length:', clickSendKey.length);
+    console.log('DB Key type:', typeof clickSendKey);
+    console.log('ENV Key length:', process.env.API_KEY.length);
+    console.log('ENV Key type:', typeof process.env.API_KEY);
     // Gửi thông báo qua ClickSend API
     const response = await axios.post('https://rest.clicksend.com/v3/voice/send', messageBody, {
         auth: {
-            username: clickSendKey,
-            password: clickSendName ,
+            username: clickSendName.trim().toString(),
+            password: clickSendKey.trim().toString() ,
         },
         headers: {
             'Content-Type': 'application/json',
