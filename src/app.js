@@ -40,6 +40,7 @@ app.use((req, res, next) => {
         '/api/v1/auth/login',
         '/api/v1/auth/register',
         '/api/v1/auth/forgot_password',
+        '/api/v1/sensors/data',
         '/'
     ]; // Danh sách các route công khai
 
