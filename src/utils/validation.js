@@ -146,3 +146,14 @@ exports.validateFamilyModifyData = (data) => {
 
     return schema.validate(data);
 };
+
+// src/utils/validation.js
+exports.validateFireDetectionData = (data) => {
+    const schema = Joi.object({
+        device_id: Joi.string().required(),
+        confidence_score: Joi.number().min(0).max(1).optional(),
+        is_fire: Joi.boolean().optional(),
+        image: Joi.any()
+    }).unknown(true); // Cho phép các trường không được định nghĩa
+    return schema.validate(data);
+};

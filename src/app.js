@@ -16,6 +16,7 @@ const guidesAndNewsAddRouter = require('./routes/guidesAndNewsAdd.router');
 const authRouter = require('./routes/auth.router'); // Route công khai
 const userLocationRouter = require('./routes/userLocation.router');
 const familyRouter = require('./routes/family.routes');
+const fireDetectionRouter = require('./routes/fireDetection.router');
 
 const { logMiddleware } = require('./utils/logger');
 const { getAccessToken } = require('./configs/token.service'); // Import service để gọi đến Firebase
@@ -25,6 +26,8 @@ const { authenticateJWT } = require('./middleware/authMiddleware'); // Middlewar
 app.use(express.json());
 app.use(logMiddleware);
 app.use(express.static('public'));
+app.use(fireDetectionRouter);
+app.use('/uploads', express.static('public/uploads'));
 
 
 // Cấu hình CORS
@@ -41,6 +44,7 @@ app.use((req, res, next) => {
         '/api/v1/auth/register',
         '/api/v1/auth/forgot_password',
         '/api/v1/sensors/data',
+        '/api/v1/fire/detection',
         '/'
     ]; // Danh sách các route công khai
 
