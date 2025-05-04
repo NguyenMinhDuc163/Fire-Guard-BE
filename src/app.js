@@ -45,6 +45,8 @@ app.use((req, res, next) => {
         '/api/v1/auth/forgot_password',
         '/api/v1/sensors/data',
         '/api/v1/fire/detection',
+        '/api/v1/notifications/send',
+        '/api/v1/emergency/call',
         '/'
     ]; // Danh sách các route công khai
 

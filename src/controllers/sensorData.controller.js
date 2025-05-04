@@ -27,9 +27,9 @@ exports.receiveSensorData = async (req, res) => {
         logger.info('Dữ liệu cảm biến đã được nhận và đang xử lý.', { meta: { request: req.body } });
 
         const buzzerStatusCode = req.body.buzzer_status ? 0 : 1; // 0 là bật, 1 là tắt
-
+        console.log(`=====> ${flameSensorCount}}`)
         // Kiểm tra flame_sensor < 500
-        if (req.body.flame_sensor < 500) {
+        if (req.body.flame_sensor < 500 || req.body.mq135_air_quality > 500) {
             flameSensorCount += 1;
         } else {
             flameSensorCount = 0; // Reset đếm nếu giá trị không thỏa điều kiện

@@ -25,7 +25,7 @@ exports.validateNotificationData = (data) => {
 
 exports.validateEmergencyData = (data) => {
     const schema = Joi.object({
-        family_member_id: Joi.number().required(),
+        family_member_id: Joi.number().optional(),
         location: Joi.string().required(),
         incident_details: Joi.string().required(),
         timestamp: Joi.date().iso().required(),
