@@ -11,9 +11,9 @@
 4||10|c|G
 4||10|C|G
 4||10|T|G</Grants>
-      <IntrospectionStateNumber>2852</IntrospectionStateNumber>
+      <IntrospectionStateNumber>3076</IntrospectionStateNumber>
       <ServerVersion>17.2</ServerVersion>
-      <StartupTime>1746278743</StartupTime>
+      <StartupTime>1746350835</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -1406,7 +1406,7 @@ true posixrules
 13219||10|C|G
 13219||-9223372036854775808|U|G
 13219||10|U|G</Grants>
-      <IntrospectionStateNumber>2852</IntrospectionStateNumber>
+      <IntrospectionStateNumber>3076</IntrospectionStateNumber>
       <ObjectId>16384</ObjectId>
       <OwnerName>postgres</OwnerName>
     </database>
@@ -4868,8 +4868,8 @@ true posixrules
     <schema id="273" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>2852</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2025-05-03.13:25:58</LastIntrospectionLocalTimestamp>
+      <IntrospectionStateNumber>3076</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2025-05-05.17:42:58</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>532</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
@@ -8350,7 +8350,7 @@ true posixrules
     </table>
     <table id="534" parent="273" name="fire_detections">
       <ObjectId>17584</ObjectId>
-      <StateNumber>2823</StateNumber>
+      <StateNumber>3075</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
@@ -8783,7 +8783,31 @@ role_id</ColNames>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <index id="594" parent="534" name="fire_detections_pkey">
+    <column id="594" parent="534" name="fire_severity">
+      <Position>8</Position>
+      <StateNumber>3075</StateNumber>
+      <StoredType>varchar(50)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="595" parent="534" name="fire_percentage">
+      <Position>9</Position>
+      <StateNumber>3075</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="596" parent="534" name="fire_intensity">
+      <Position>10</Position>
+      <StateNumber>3075</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <column id="597" parent="534" name="fire_growth_rate">
+      <Position>11</Position>
+      <StateNumber>3075</StateNumber>
+      <StoredType>double precision|0s</StoredType>
+      <TypeId>701</TypeId>
+    </column>
+    <index id="598" parent="534" name="fire_detections_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17592</ObjectId>
@@ -8792,7 +8816,7 @@ role_id</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="595" parent="534" name="idx_fire_detections_device_timestamp">
+    <index id="599" parent="534" name="idx_fire_detections_device_timestamp">
       <ColNames>device_id
 timestamp</ColNames>
       <ObjectId>17594</ObjectId>
@@ -8802,14 +8826,14 @@ timestamp</ColNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="596" parent="534" name="fire_detections_pkey">
+    <key id="600" parent="534" name="fire_detections_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17593</ObjectId>
       <Primary>1</Primary>
       <StateNumber>2823</StateNumber>
       <UnderlyingIndexId>17592</UnderlyingIndexId>
     </key>
-    <column id="597" parent="535" name="id">
+    <column id="601" parent="535" name="id">
       <DefaultExpression>nextval(&apos;guides_and_news_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -8818,46 +8842,46 @@ timestamp</ColNames>
       <SequenceId>16419</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="598" parent="535" name="title">
+    <column id="602" parent="535" name="title">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>768</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="599" parent="535" name="type">
+    <column id="603" parent="535" name="type">
       <Position>3</Position>
       <StateNumber>768</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="600" parent="535" name="url">
+    <column id="604" parent="535" name="url">
       <Position>4</Position>
       <StateNumber>768</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="601" parent="535" name="content">
+    <column id="605" parent="535" name="content">
       <Position>5</Position>
       <StateNumber>768</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="602" parent="535" name="category">
+    <column id="606" parent="535" name="category">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StateNumber>768</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="603" parent="535" name="timestamp">
+    <column id="607" parent="535" name="timestamp">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>7</Position>
       <StateNumber>768</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <index id="604" parent="535" name="guides_and_news_pkey">
+    <index id="608" parent="535" name="guides_and_news_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16427</ObjectId>
@@ -8866,35 +8890,35 @@ timestamp</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="605" parent="535" name="guides_and_news_pkey">
+    <key id="609" parent="535" name="guides_and_news_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16428</ObjectId>
       <Primary>1</Primary>
       <StateNumber>768</StateNumber>
       <UnderlyingIndexId>16427</UnderlyingIndexId>
     </key>
-    <column id="606" parent="536" name="device_name">
+    <column id="610" parent="536" name="device_name">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>771</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="607" parent="536" name="status">
+    <column id="611" parent="536" name="status">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>771</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="608" parent="536" name="timestamp">
+    <column id="612" parent="536" name="timestamp">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>771</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <index id="609" parent="536" name="iot_devices_status_pkey">
+    <index id="613" parent="536" name="iot_devices_status_pkey">
       <ColNames>device_name</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16432</ObjectId>
@@ -8906,14 +8930,14 @@ timestamp</ColNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="610" parent="536" name="iot_devices_status_pkey">
+    <key id="614" parent="536" name="iot_devices_status_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16433</ObjectId>
       <Primary>1</Primary>
       <StateNumber>771</StateNumber>
       <UnderlyingIndexId>16432</UnderlyingIndexId>
     </key>
-    <column id="611" parent="537" name="id">
+    <column id="615" parent="537" name="id">
       <DefaultExpression>nextval(&apos;notifications_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -8922,58 +8946,58 @@ timestamp</ColNames>
       <SequenceId>16434</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="612" parent="537" name="user_id">
+    <column id="616" parent="537" name="user_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>774</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="613" parent="537" name="message">
+    <column id="617" parent="537" name="message">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>774</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="614" parent="537" name="timestamp">
+    <column id="618" parent="537" name="timestamp">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>774</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="615" parent="537" name="fcm_token">
+    <column id="619" parent="537" name="fcm_token">
       <Position>5</Position>
       <StateNumber>774</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="616" parent="537" name="status">
+    <column id="620" parent="537" name="status">
       <Position>6</Position>
       <StateNumber>774</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="617" parent="537" name="title">
+    <column id="621" parent="537" name="title">
       <Position>7</Position>
       <StateNumber>774</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="618" parent="537" name="body">
+    <column id="622" parent="537" name="body">
       <Position>8</Position>
       <StateNumber>774</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="619" parent="537" name="family_member_id">
+    <column id="623" parent="537" name="family_member_id">
       <Position>9</Position>
       <StateNumber>774</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <index id="620" parent="537" name="notifications_pkey">
+    <index id="624" parent="537" name="notifications_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16441</ObjectId>
@@ -8982,14 +9006,14 @@ timestamp</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="621" parent="537" name="notifications_pkey">
+    <key id="625" parent="537" name="notifications_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16442</ObjectId>
       <Primary>1</Primary>
       <StateNumber>774</StateNumber>
       <UnderlyingIndexId>16441</UnderlyingIndexId>
     </key>
-    <column id="622" parent="538" name="id">
+    <column id="626" parent="538" name="id">
       <DefaultExpression>nextval(&apos;roles_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -8998,20 +9022,20 @@ timestamp</ColNames>
       <SequenceId>17326</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="623" parent="538" name="role_name">
+    <column id="627" parent="538" name="role_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>1754</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="624" parent="538" name="description">
+    <column id="628" parent="538" name="description">
       <Position>3</Position>
       <StateNumber>1754</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <index id="625" parent="538" name="roles_pkey">
+    <index id="629" parent="538" name="roles_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17333</ObjectId>
@@ -9020,14 +9044,14 @@ timestamp</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="626" parent="538" name="roles_pkey">
+    <key id="630" parent="538" name="roles_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17334</ObjectId>
       <Primary>1</Primary>
       <StateNumber>1754</StateNumber>
       <UnderlyingIndexId>17333</UnderlyingIndexId>
     </key>
-    <column id="627" parent="539" name="id">
+    <column id="631" parent="539" name="id">
       <DefaultExpression>nextval(&apos;sensor_data_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -9036,48 +9060,48 @@ timestamp</ColNames>
       <SequenceId>16443</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="628" parent="539" name="device_id">
+    <column id="632" parent="539" name="device_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>777</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="629" parent="539" name="flame_sensor">
+    <column id="633" parent="539" name="flame_sensor">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>777</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="630" parent="539" name="mq2_gas_level">
+    <column id="634" parent="539" name="mq2_gas_level">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>777</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="631" parent="539" name="mq135_air_quality">
+    <column id="635" parent="539" name="mq135_air_quality">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>777</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="632" parent="539" name="timestamp">
+    <column id="636" parent="539" name="timestamp">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StateNumber>777</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="633" parent="539" name="buzzer_status">
+    <column id="637" parent="539" name="buzzer_status">
       <Position>7</Position>
       <StateNumber>777</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <index id="634" parent="539" name="sensor_data_pkey">
+    <index id="638" parent="539" name="sensor_data_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16450</ObjectId>
@@ -9086,14 +9110,14 @@ timestamp</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="635" parent="539" name="sensor_data_pkey">
+    <key id="639" parent="539" name="sensor_data_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16451</ObjectId>
       <Primary>1</Primary>
       <StateNumber>777</StateNumber>
       <UnderlyingIndexId>16450</UnderlyingIndexId>
     </key>
-    <column id="636" parent="540" name="id">
+    <column id="640" parent="540" name="id">
       <DefaultExpression>nextval(&apos;server_log_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -9102,62 +9126,62 @@ timestamp</ColNames>
       <SequenceId>16452</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="637" parent="540" name="status_code">
+    <column id="641" parent="540" name="status_code">
       <Position>2</Position>
       <StateNumber>780</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="638" parent="540" name="method">
+    <column id="642" parent="540" name="method">
       <Position>3</Position>
       <StateNumber>780</StateNumber>
       <StoredType>varchar(10)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="639" parent="540" name="url">
+    <column id="643" parent="540" name="url">
       <Position>4</Position>
       <StateNumber>780</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="640" parent="540" name="headers">
+    <column id="644" parent="540" name="headers">
       <Position>5</Position>
       <StateNumber>780</StateNumber>
       <StoredType>jsonb|0s</StoredType>
       <TypeId>3802</TypeId>
     </column>
-    <column id="641" parent="540" name="request_body">
+    <column id="645" parent="540" name="request_body">
       <Position>6</Position>
       <StateNumber>780</StateNumber>
       <StoredType>jsonb|0s</StoredType>
       <TypeId>3802</TypeId>
     </column>
-    <column id="642" parent="540" name="response_body">
+    <column id="646" parent="540" name="response_body">
       <Position>7</Position>
       <StateNumber>780</StateNumber>
       <StoredType>jsonb|0s</StoredType>
       <TypeId>3802</TypeId>
     </column>
-    <column id="643" parent="540" name="level">
+    <column id="647" parent="540" name="level">
       <Position>8</Position>
       <StateNumber>780</StateNumber>
       <StoredType>varchar(10)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="644" parent="540" name="message">
+    <column id="648" parent="540" name="message">
       <Position>9</Position>
       <StateNumber>780</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="645" parent="540" name="timestamp">
+    <column id="649" parent="540" name="timestamp">
       <DefaultExpression>now()</DefaultExpression>
       <Position>10</Position>
       <StateNumber>780</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <index id="646" parent="540" name="server_log_pkey">
+    <index id="650" parent="540" name="server_log_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16460</ObjectId>
@@ -9166,14 +9190,14 @@ timestamp</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="647" parent="540" name="server_log_pkey">
+    <key id="651" parent="540" name="server_log_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16461</ObjectId>
       <Primary>1</Primary>
       <StateNumber>780</StateNumber>
       <UnderlyingIndexId>16460</UnderlyingIndexId>
     </key>
-    <column id="648" parent="541" name="id">
+    <column id="652" parent="541" name="id">
       <DefaultExpression>nextval(&apos;users_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -9182,74 +9206,74 @@ timestamp</ColNames>
       <SequenceId>16462</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="649" parent="541" name="username">
+    <column id="653" parent="541" name="username">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>783</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="650" parent="541" name="email">
+    <column id="654" parent="541" name="email">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>783</StateNumber>
       <StoredType>varchar(100)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="651" parent="541" name="password">
+    <column id="655" parent="541" name="password">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>783</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="652" parent="541" name="token_fcm">
+    <column id="656" parent="541" name="token_fcm">
       <Position>5</Position>
       <StateNumber>783</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="653" parent="541" name="created_at">
+    <column id="657" parent="541" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>6</Position>
       <StateNumber>783</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="654" parent="541" name="phone_number">
+    <column id="658" parent="541" name="phone_number">
       <Position>7</Position>
       <StateNumber>1684</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="655" parent="541" name="click_send_name">
+    <column id="659" parent="541" name="click_send_name">
       <DefaultExpression>&apos;&apos;::character varying</DefaultExpression>
       <Position>8</Position>
       <StateNumber>2507</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="656" parent="541" name="click_send_key">
+    <column id="660" parent="541" name="click_send_key">
       <DefaultExpression>&apos;&apos;::character varying</DefaultExpression>
       <Position>9</Position>
       <StateNumber>2507</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="657" parent="541" name="updated_at">
+    <column id="661" parent="541" name="updated_at">
       <Position>10</Position>
       <StateNumber>1697</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="658" parent="541" name="alert_phone">
+    <column id="662" parent="541" name="alert_phone">
       <DefaultExpression>&apos;114&apos;::character varying</DefaultExpression>
       <Position>11</Position>
       <StateNumber>2507</StateNumber>
       <StoredType>varchar(20)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <index id="659" parent="541" name="users_pkey">
+    <index id="663" parent="541" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16470</ObjectId>
@@ -9258,7 +9282,7 @@ timestamp</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="660" parent="541" name="users_email_key">
+    <index id="664" parent="541" name="users_email_key">
       <ColNames>email</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16472</ObjectId>
@@ -9269,14 +9293,14 @@ timestamp</ColNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="661" parent="541" name="users_pkey">
+    <key id="665" parent="541" name="users_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16471</ObjectId>
       <Primary>1</Primary>
       <StateNumber>783</StateNumber>
       <UnderlyingIndexId>16470</UnderlyingIndexId>
     </key>
-    <key id="662" parent="541" name="users_email_key">
+    <key id="666" parent="541" name="users_email_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16473</ObjectId>
       <StateNumber>783</StateNumber>

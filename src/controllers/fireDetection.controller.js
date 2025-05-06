@@ -22,14 +22,26 @@ exports.detectFire = async (req, res) => {
             );
         }
 
-        const { device_id, confidence_score, is_fire } = req.body;
+        const {
+            device_id,
+            confidence_score,
+            is_fire,
+            fire_severity,
+            fire_percentage,
+            fire_intensity,
+            fire_growth_rate
+        } = req.body;
 
-        // Lưu ảnh
+        // Lưu ảnh và thông tin
         const result = await saveFireDetectionImage({
             device_id,
             file: req.file,
             confidence_score: parseFloat(confidence_score) || 0,
             is_fire: is_fire === 'true' || is_fire === true,
+            fire_severity,
+            fire_percentage: parseFloat(fire_percentage) || 0,
+            fire_intensity: parseFloat(fire_intensity) || 0,
+            fire_growth_rate: parseFloat(fire_growth_rate) || 0,
             removedImage: req.removedImage
         });
 
@@ -37,7 +49,9 @@ exports.detectFire = async (req, res) => {
             meta: {
                 device_id,
                 image_url: result.image_url,
-                is_fire: result.is_fire
+                is_fire: result.is_fire,
+                fire_severity: result.fire_severity,
+                fire_percentage: result.fire_percentage
             }
         });
 

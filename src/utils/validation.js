@@ -153,7 +153,11 @@ exports.validateFireDetectionData = (data) => {
         device_id: Joi.string().required(),
         confidence_score: Joi.number().min(0).max(1).optional(),
         is_fire: Joi.boolean().optional(),
+        fire_severity: Joi.string().optional(),
+        fire_percentage: Joi.number().min(0).max(100).optional(),
+        fire_intensity: Joi.number().min(0).max(100).optional(),
+        fire_growth_rate: Joi.number().optional(),
         image: Joi.any()
-    }).unknown(true); // Cho phép các trường không được định nghĩa
+    }).unknown(true);
     return schema.validate(data);
 };
