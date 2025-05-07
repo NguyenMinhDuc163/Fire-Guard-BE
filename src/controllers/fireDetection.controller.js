@@ -3,10 +3,16 @@ const { saveFireDetectionImage, getFireDetectionImages } = require('../services/
 const { createResponse } = require('../utils/responseHelper');
 const { logger } = require('../utils/logger');
 const { validateFireDetectionData } = require('../utils/validation');
+const axios = require('axios');
+
+// Lấy các biến từ env
+const BASE_URL = process.env.BASE_URL;
+const PHONE_NUMBER = process.env.PHONE_NUMBER;
+const NOTIFICATION_INTERVAL = 5 * 1000;
+let lastFireNotificationTime = 0;
 
 exports.detectFire = async (req, res) => {
     try {
-        // Validate dữ liệu
         const { error } = validateFireDetectionData(req.body);
         if (error) {
             logger.error(`Validation Error: ${error.details[0].message}`, { meta: { request: req.body } });
@@ -32,7 +38,6 @@ exports.detectFire = async (req, res) => {
             fire_growth_rate
         } = req.body;
 
-        // Lưu ảnh và thông tin
         const result = await saveFireDetectionImage({
             device_id,
             file: req.file,
@@ -54,6 +59,48 @@ exports.detectFire = async (req, res) => {
                 fire_percentage: result.fire_percentage
             }
         });
+
+        if (result.is_fire && Date.now() - lastFireNotificationTime >= NOTIFICATION_INTERVAL) {
+            lastFireNotificationTime = Date.now();
+
+            if (fire_severity === 'max') {
+                // Gửi thông báo
+                await axios.post(`${BASE_URL}/notifications/send`, {
+                    title: "CẢNH BÁO CHÁY CẤP ĐỘ CAO!",
+                    body: `Phát hiện cháy cấp độ CAO với độ tin cậy ${confidence_score}, tỷ lệ cháy ${fire_percentage}%, cường độ ${fire_intensity}`
+                });
+
+                await axios.post(`${BASE_URL}/emergency/call`, {
+                    location: "123 ABC Street",
+                    incident_details: "TIN KHẨN CẤP: Hệ thống phát hiện cháy tự động phát hiện đám cháy cấp độ CAO!\n" +
+                        `Cường độ cháy: ${fire_intensity}, Tỷ lệ cháy: ${fire_percentage}%\n` +
+                        "Vui lòng sơ tán ngay lập tức qua lối thoát hiểm gần nhất.\n" +
+                        "Không sử dụng thang máy! Nếu có khói, hãy bịt mũi và miệng bằng khăn ướt.\n" +
+                        "Lực lượng cứu hỏa đã được thông báo và đang trên đường đến. Hãy bình tĩnh và đảm bảo an toàn cho bạn và những người xung quanh.\n" +
+                        "Để được hỗ trợ thêm, vui lòng gọi dịch vụ khẩn cấp!",
+                    timestamp: new Date().toISOString(),
+                    phone_number: PHONE_NUMBER
+                });
+
+                logger.info('Đã gửi thông báo và gọi lực lượng cứu hỏa cho trường hợp cháy cấp độ CAO');
+            }
+            else if (fire_severity === 'mid') {
+                await axios.post(`${BASE_URL}/notifications/send`, {
+                    title: "Cảnh báo cháy cấp độ TRUNG BÌNH",
+                    body: `Phát hiện cháy cấp độ TRUNG BÌNH với độ tin cậy ${confidence_score}, tỷ lệ cháy ${fire_percentage}%, cường độ ${fire_intensity}`
+                });
+
+                logger.info('Đã gửi thông báo cho trường hợp cháy cấp độ TRUNG BÌNH');
+            }
+            else if (fire_severity === 'min') {
+                await axios.post(`${BASE_URL}/notifications/send`, {
+                    title: "Cảnh báo cháy cấp độ THẤP",
+                    body: `Phát hiện cháy cấp độ THẤP với độ tin cậy ${confidence_score}, tỷ lệ cháy ${fire_percentage}%, cường độ ${fire_intensity}`
+                });
+
+                logger.info('Đã gửi thông báo cho trường hợp cháy cấp độ THẤP');
+            }
+        }
 
         return res.status(200).json(
             createResponse('success', 'Ảnh phát hiện cháy đã được lưu thành công', 200, [result])
@@ -78,7 +125,7 @@ exports.getFireImages = async (req, res) => {
 
         return res.status(200).json(
             createResponse('success', 'Lấy danh sách ảnh thành công', 200, images)
-        );
+        );n
     } catch (err) {
         logger.error(`Lỗi khi lấy danh sách ảnh: ${err.message}`, {
             meta: { error: err }
